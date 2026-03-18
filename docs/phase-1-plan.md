@@ -1,6 +1,6 @@
 # Phase 1: Foundation — Execution Plan
 
-**Status:** Not started
+**Status:** In progress (1A complete)
 **Last Updated:** 2026-03-17
 
 ---
@@ -17,23 +17,24 @@ Phase 1 is split into sub-phases so work can span multiple sessions with clean c
 
 ## Phase 1A — Backend Core + Models
 
-**Status:** Not started
+**Status:** Complete
 
 ### Tasks
-- [ ] Run `uv sync` to create virtualenv and install dependencies
-- [ ] Create `backend/config.py` — app settings via pydantic-settings (loads .env)
-- [ ] Create `backend/database.py` — async SQLAlchemy engine + session factory
-- [ ] Create `backend/main.py` — FastAPI app entry with CORS, lifespan, router includes
-- [ ] Create all 6 SQLAlchemy models in `backend/models/`:
-  - [ ] `practice.py` — PracticeProfile
-  - [ ] `agent_config.py` — AgentConfig
-  - [ ] `simulation.py` — SimulationSession
-  - [ ] `tool_call.py` — ToolCall
-  - [ ] `eval_run.py` — EvalRun
-  - [ ] `eval_case.py` — EvalCase
-- [ ] Create `backend/models/__init__.py` — re-export all models
-- [ ] Init Alembic and generate initial migration for all 6 tables
-- [ ] Verify: `uv run uvicorn main:app --reload --port 8000` starts, tables created
+- [x] Run `uv sync` to create virtualenv and install dependencies
+- [x] Create `backend/config.py` — app settings via pydantic-settings (loads .env)
+- [x] Create `backend/database.py` — async SQLAlchemy engine + session factory
+- [x] Create `backend/main.py` — FastAPI app entry with CORS, lifespan, health check
+- [x] Create all 6 SQLAlchemy models in `backend/models/`:
+  - [x] `base.py` — DeclarativeBase
+  - [x] `practice.py` — PracticeProfile
+  - [x] `agent_config.py` — AgentConfig
+  - [x] `simulation.py` — SimulationSession
+  - [x] `tool_call.py` — ToolCall
+  - [x] `eval_run.py` — EvalRun
+  - [x] `eval_case.py` — EvalCase
+- [x] Create `backend/models/__init__.py` — re-export all models
+- [x] Init Alembic (async config) and generate initial migration for all 6 tables
+- [x] Verify: app starts on port 8000, health check returns 200, all 6 tables in SQLite
 
 ### Done When
 App starts clean on port 8000 with all tables in SQLite. No seed data yet, no API endpoints beyond health check.
