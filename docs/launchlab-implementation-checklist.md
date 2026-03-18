@@ -158,9 +158,10 @@ Create the fake healthcare practice and make its rules available to the simulato
 ### 1.4 Build practice config API
 **Type:** Backend / API
 **Checklist**
-- [ ] Create `GET /practice`
-- [ ] Create `POST /practice`
-- [ ] Create `PUT /practice`
+- [ ] Create `GET /api/practices/{practice_id}`
+- [ ] Create `POST /api/practices`
+- [ ] Create `PATCH /api/practices/{practice_id}`
+- [ ] Create `POST /api/practice_resets`
 - [ ] Add tests for CRUD behavior
 
 ### 1.5 Build Practice Setup screen
@@ -219,8 +220,9 @@ Make agent behavior explicit and editable.
 ### 2.4 Build agent config API
 **Type:** Backend / API
 **Checklist**
-- [ ] Create `GET /agent-config`
-- [ ] Create `PUT /agent-config`
+- [ ] Create `GET /api/agent_configs/{agent_config_id}`
+- [ ] Create `PATCH /api/agent_configs/{agent_config_id}`
+- [ ] Create `POST /api/agent_config_resets`
 - [ ] Add API tests
 
 ### 2.5 Build Agent Behavior Config screen
@@ -327,9 +329,9 @@ Build the simulator where scenarios are run against the configured agent.
 ### 4.3 Build simulation APIs
 **Type:** Backend / API
 **Checklist**
-- [ ] Create `POST /simulate/start`
-- [ ] Create `POST /simulate/message`
-- [ ] Create `GET /simulate/{id}`
+- [ ] Create `POST /api/simulations`
+- [ ] Create `POST /api/simulations/{simulation_id}/messages`
+- [ ] Create `GET /api/simulations/{simulation_id}`
 - [ ] Add tests for session creation and message flow
 
 ### 4.4 Build Conversation Simulator screen
@@ -387,8 +389,8 @@ Make tool usage, escalation, and outcomes easy to inspect.
 ### 5.3 Build trace endpoints
 **Type:** Backend / API
 **Checklist**
-- [ ] Create `GET /simulate/{id}/tools`
-- [ ] Optionally include trace details in `GET /simulate/{id}`
+- [ ] Create `GET /api/simulations/{simulation_id}/tool_calls`
+- [ ] Optionally include trace details in `GET /api/simulations/{simulation_id}`
 - [ ] Add tests
 
 ### 5.4 Build Simulation Trace Detail screen
@@ -572,9 +574,9 @@ Run structured scenario suites and score behavior.
 ### 8.5 Build eval APIs
 **Type:** Backend / API
 **Checklist**
-- [ ] Create `POST /evals/run`
-- [ ] Create `GET /evals/{id}`
-- [ ] Create `GET /evals/latest`
+- [ ] Create `POST /api/eval_runs`
+- [ ] Create `GET /api/eval_runs/{eval_run_id}`
+- [ ] Create `GET /api/eval_runs` (latest first via default sort)
 - [ ] Add tests
 
 ### 8.6 Build Eval Runner screen
@@ -620,7 +622,7 @@ Translate eval results into a launch recommendation.
 ### 9.3 Build dashboard API
 **Type:** Backend / API
 **Checklist**
-- [ ] Create `GET /dashboard/readiness`
+- [ ] Create `GET /api/dashboard/readiness`
 - [ ] Return score, categories, risks, recommendation
 - [ ] Add tests
 
