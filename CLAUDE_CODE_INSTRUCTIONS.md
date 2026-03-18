@@ -34,7 +34,7 @@ This is a portfolio project targeting Solutions Engineer and AI-focused roles. I
 - **shadcn/ui** for UI components (install via CLI as needed)
 - **Radix UI** primitives (comes with shadcn)
 - **Zustand** for state management
-- **React Router v6** for routing
+- **React Router v7** for routing
 - **Axios** for HTTP client
 
 ### Infrastructure
@@ -107,19 +107,19 @@ Follow the structure defined in `docs/launchlab-technical-architecture.md` Secti
 This project has three distinct Claude API call patterns. Keep them clearly separated:
 
 1. **Healthcare Agent** (`services/orchestrator.py`)
-   - Model: `claude-sonnet-4-20250514`
+   - Model: configurable via `ANTHROPIC_MODEL` env var (default: `claude-sonnet-4-5-20250929`)
    - Uses tool definitions (Anthropic native tool use)
    - System prompt is dynamically assembled from practice config + agent config
    - Runs in a loop: message → tool call → tool result → message (until text response)
 
 2. **Patient Simulator** (`services/patient_simulator.py`)
-   - Model: `claude-sonnet-4-20250514`
+   - Model: configurable via `ANTHROPIC_MODEL` env var (default: `claude-sonnet-4-5-20250929`)
    - No tools — text generation only
    - System prompt is the patient persona (varies per scenario)
    - Generates one patient message at a time based on conversation history
 
 3. **LLM-as-Judge** (`services/eval_judge.py`)
-   - Model: `claude-sonnet-4-20250514`
+   - Model: configurable via `ANTHROPIC_MODEL` env var (default: `claude-sonnet-4-5-20250929`)
    - No tools — structured JSON output only
    - System prompt defines evaluation rubric
    - Called once per completed scenario with full transcript

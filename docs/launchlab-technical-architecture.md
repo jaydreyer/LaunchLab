@@ -31,8 +31,8 @@ All three use the same model but with distinct system prompts and purposes. This
 | Styling | Tailwind CSS | Utility-first, pairs with shadcn |
 | State | Zustand | Lightweight, no boilerplate |
 | HTTP | Axios or fetch wrapper | Simple API client |
-| Routing | React Router v6 | Standard SPA routing |
-| Code Editor | Monaco Editor (lite) or CodeMirror | For system prompt / config editing |
+| Routing | React Router v7 | Standard SPA routing |
+| Code Editor | CodeMirror 6 | Lightweight (~300KB), modular, for system prompt / config editing |
 
 ### Backend
 | Layer | Choice | Rationale |
@@ -252,7 +252,7 @@ class Orchestrator:
         # Agent loop — may iterate if tools are called
         while True:
             response = await self.client.messages.create(
-                model="claude-sonnet-4-20250514",
+                model=settings.anthropic_model,  # configurable via ANTHROPIC_MODEL env var
                 max_tokens=1024,
                 system=system_prompt,
                 messages=session.messages,
@@ -617,7 +617,7 @@ URGENT_ESCALATION_CRITERIA = [
 ```python
 async def evaluate_scenario(self, transcript, scenario, tool_calls, outcome) -> EvalResult:
     response = await self.client.messages.create(
-        model="claude-sonnet-4-20250514",
+        model=settings.anthropic_model,  # configurable via ANTHROPIC_MODEL env var
         max_tokens=2048,
         system=JUDGE_SYSTEM_PROMPT,
         messages=[{
@@ -1141,7 +1141,7 @@ Hold back:
 - [ ] Build tool executor with logging
 - [ ] Test: single conversation via API (curl/httpie)
 - [ ] Scaffold React + Vite + shadcn/ui + Tailwind
-- [ ] Set up React Router with 6 page stubs
+- [ ] Set up React Router v7 with 6 page stubs
 
 ### Phase 2: Config + Simulator UI (Days 3-5)
 **Goal: Interactive conversations in the browser**
@@ -1204,6 +1204,7 @@ To complement the "Luxury Minimal" aesthetic of Recall.local while being distinc
 ```bash
 # .env (never committed)
 ANTHROPIC_API_KEY=sk-ant-...
+ANTHROPIC_MODEL=claude-sonnet-4-5-20250929  # or claude-sonnet-4-20250514 for lower cost
 DATABASE_URL=sqlite+aiosqlite:///./data/launchlab.db
 ENVIRONMENT=production  # or development
 LOG_LEVEL=INFO
