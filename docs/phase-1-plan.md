@@ -1,7 +1,7 @@
 # Phase 1: Foundation — Execution Plan
 
-**Status:** In progress (1A complete)
-**Last Updated:** 2026-03-17
+**Status:** Complete (1A–1E all done)
+**Last Updated:** 2026-03-18
 
 ---
 
@@ -113,25 +113,25 @@ All 6 tools return realistic, conditional responses. Tool executor can dispatch 
 
 ## Phase 1D — Orchestrator + Conversation Test
 
-**Status:** Not started
+**Status:** Complete
 
 ### Tasks
-- [ ] Create `backend/prompts/agent_system.py` — dynamic system prompt assembly from practice config + agent config
-- [ ] Create `backend/services/orchestrator.py`:
-  - [ ] Accept user message + session
-  - [ ] Assemble system prompt dynamically
-  - [ ] Build tool definitions from config
-  - [ ] Run agent loop: call Claude → handle tool_use → execute tool → loop until text response
-  - [ ] Check escalation triggers
-  - [ ] Return OrchestratorResponse (agent message + tool calls + escalation info)
-- [ ] Create `backend/schemas/simulation.py` — create session, send message, response schemas
-- [ ] Create `backend/services/simulation_service.py` — create session, process message
-- [ ] Create `backend/routers/simulations.py`:
-  - [ ] `POST /api/simulations` (create session)
-  - [ ] `POST /api/simulations/{simulation_id}/messages` (send message, get agent reply)
-  - [ ] `GET /api/simulations/{simulation_id}` (get session with transcript)
-- [ ] Register router in `main.py`
-- [ ] Verify: multi-turn curl conversation with tool calls logged
+- [x] Create `backend/prompts/agent_system.py` — dynamic system prompt assembly from practice config + agent config
+- [x] Create `backend/services/orchestrator.py`:
+  - [x] Accept user message + session
+  - [x] Assemble system prompt dynamically
+  - [x] Build tool definitions from config
+  - [x] Run agent loop: call Claude → handle tool_use → execute tool → loop until text response
+  - [x] Check escalation triggers
+  - [x] Return OrchestratorResponse (agent message + tool calls + escalation info)
+- [x] Create `backend/schemas/simulation.py` — create session, send message, response schemas
+- [x] Create `backend/services/simulation_service.py` — create session, process message
+- [x] Create `backend/routers/simulations.py`:
+  - [x] `POST /api/simulations` (create session)
+  - [x] `POST /api/simulations/{simulation_id}/messages` (send message, get agent reply)
+  - [x] `GET /api/simulations/{simulation_id}` (get session with transcript)
+- [x] Register router in `main.py`
+- [x] Verify: multi-turn curl conversation with tool calls logged
 
 ### Done When
 Can create a simulation session via curl, send messages, get agent responses with tool calls, and see tool calls logged in the DB. The dynamic system prompt correctly reflects practice + agent config.
@@ -145,33 +145,33 @@ Can create a simulation session via curl, send messages, get agent responses wit
 
 ## Phase 1E — Frontend Scaffold
 
-**Status:** Not started
+**Status:** Complete
 
 ### Tasks
-- [ ] Scaffold React + Vite + TypeScript in `frontend/`
-- [ ] Install and configure Tailwind CSS
-- [ ] Install and configure shadcn/ui
-- [ ] Install React Router v7, Axios, Zustand
-- [ ] Create `frontend/src/api/client.ts` — Axios instance with base URL
-- [ ] Create layout components:
-  - [ ] `components/layout/AppShell.tsx` — main layout wrapper
-  - [ ] `components/layout/Sidebar.tsx` — navigation sidebar
-  - [ ] `components/layout/PageHeader.tsx` — page title + actions
-- [ ] Create 6 page stubs in `frontend/src/pages/`:
-  - [ ] `PracticeSetup.tsx`
-  - [ ] `AgentConfig.tsx`
-  - [ ] `Simulator.tsx`
-  - [ ] `SimulationTrace.tsx`
-  - [ ] `EvalRunner.tsx`
-  - [ ] `ReadinessDashboard.tsx`
-- [ ] Set up routing in `App.tsx` with all 6 routes
-- [ ] Configure Vite proxy to backend (port 8000)
-- [ ] Apply "Clinical Precision" design tokens (cool grays, teal accent, Inter font)
-- [ ] Make layout mobile-responsive:
-  - [ ] Sidebar collapses to hamburger menu on small screens
-  - [ ] Pages use responsive Tailwind breakpoints
-  - [ ] Split-pane layouts (used later in Simulator) will stack vertically on mobile
-- [ ] Verify: `npm run dev` shows all 6 pages navigable via sidebar on desktop and mobile viewports
+- [x] Scaffold React + Vite + TypeScript in `frontend/`
+- [x] Install and configure Tailwind CSS v4
+- [x] Install and configure shadcn/ui (v4 with base-ui)
+- [x] Install React Router v7, Axios, Zustand, Lucide icons
+- [x] Create `frontend/src/api/client.ts` — Axios instance with base URL
+- [x] Create layout components:
+  - [x] `components/layout/AppShell.tsx` — main layout wrapper
+  - [x] `components/layout/Sidebar.tsx` — navigation sidebar
+  - [x] `components/layout/PageHeader.tsx` — page title + actions
+- [x] Create 6 page stubs in `frontend/src/pages/`:
+  - [x] `PracticeSetup.tsx`
+  - [x] `AgentConfig.tsx`
+  - [x] `Simulator.tsx`
+  - [x] `SimulationTrace.tsx`
+  - [x] `EvalRunner.tsx`
+  - [x] `ReadinessDashboard.tsx`
+- [x] Set up routing in `App.tsx` with all 6 routes
+- [x] Configure Vite proxy to backend (port 8000)
+- [x] Apply "Clinical Precision" design tokens (cool grays, teal accent, Inter font)
+- [x] Make layout mobile-responsive:
+  - [x] Sidebar collapses to hamburger menu on small screens
+  - [x] Pages use responsive Tailwind breakpoints
+  - [x] Split-pane layouts (Simulator) stack vertically on mobile
+- [x] Verify: `npm run dev` starts, `npm run build` passes clean
 
 ### Done When
 Frontend runs on port 5173, all 6 pages are navigable via the sidebar (hamburger on mobile), layout looks clean with the Clinical Precision design direction. No data fetching yet — just stubs.
