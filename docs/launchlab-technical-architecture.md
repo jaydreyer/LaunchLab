@@ -724,55 +724,55 @@ def compute_readiness(eval_run: EvalRun) -> ReadinessReport:
 ### Practice Endpoints
 
 ```
-GET    /api/practice              → PracticeProfile
-POST   /api/practice              → PracticeProfile (create)
-PUT    /api/practice              → PracticeProfile (update)
-POST   /api/practice/reset        → PracticeProfile (reset to BrightCare defaults)
+GET    /api/practices                                → { data: [PracticeProfile], pagination }
+GET    /api/practices/{practice_id}                  → PracticeProfile
+POST   /api/practices                                → PracticeProfile (create)
+PATCH  /api/practices/{practice_id}                  → PracticeProfile (partial update)
+POST   /api/practice_resets                          → PracticeProfile (reset to BrightCare defaults)
 ```
 
 ### Agent Config Endpoints
 
 ```
-GET    /api/agent-config                    → AgentConfig
-PUT    /api/agent-config                    → AgentConfig (update)
-POST   /api/agent-config/reset              → AgentConfig (reset to defaults)
-GET    /api/agent-config/history             → List[AgentConfigSnapshot] (for "compare to previous")
+GET    /api/agent_configs/{agent_config_id}           → AgentConfig
+PATCH  /api/agent_configs/{agent_config_id}           → AgentConfig (partial update)
+POST   /api/agent_config_resets                       → AgentConfig (reset to defaults)
+GET    /api/agent_configs/{agent_config_id}/history   → { data: [AgentConfigSnapshot], pagination }
 ```
 
 ### Simulation Endpoints
 
 ```
-POST   /api/simulate/start                  → SimulationSession (create session)
-POST   /api/simulate/{id}/message           → MessageResponse (send message, get agent reply)
-POST   /api/simulate/{id}/auto-respond      → MessageResponse (patient simulator generates next msg)
-GET    /api/simulate/{id}                   → SimulationSession (full session with transcript)
-GET    /api/simulate/{id}/trace             → List[ToolCall] (tool trace for session)
-POST   /api/simulate/{id}/reset             → SimulationSession (reset conversation, keep config)
-GET    /api/simulate/sessions               → List[SimulationSessionSummary] (recent sessions)
+POST   /api/simulations                               → SimulationSession (create session)
+GET    /api/simulations/{simulation_id}               → SimulationSession (full session with transcript)
+GET    /api/simulations                               → { data: [SimulationSessionSummary], pagination }
+POST   /api/simulations/{simulation_id}/messages      → MessageResponse (send message, get agent reply)
+POST   /api/simulations/{simulation_id}/auto_responses → MessageResponse (patient simulator generates next msg)
+GET    /api/simulations/{simulation_id}/tool_calls    → { data: [ToolCall], pagination }
+POST   /api/simulation_resets                         → SimulationSession (reset conversation, keep config)
 ```
 
-### Eval Endpoints
+### Eval Run Endpoints
 
 ```
-POST   /api/evals/run                       → EvalRun (execute scenario suite)
-GET    /api/evals/{id}                      → EvalRun (full results)
-GET    /api/evals/latest                    → EvalRun (most recent run)
-GET    /api/evals/{id}/export               → ReadinessReport (markdown/PDF export)
-GET    /api/evals/history                   → List[EvalRunSummary] (compare runs over time)
+POST   /api/eval_runs                                 → EvalRun (execute scenario suite)
+GET    /api/eval_runs/{eval_run_id}                   → EvalRun (full results)
+GET    /api/eval_runs                                 → { data: [EvalRunSummary], pagination } (latest first)
+GET    /api/eval_runs/{eval_run_id}/export            → File (markdown/PDF export)
 ```
 
 ### Dashboard Endpoints
 
 ```
-GET    /api/dashboard/readiness             → ReadinessReport
-GET    /api/dashboard/readiness/export      → File (PDF or markdown download)
+GET    /api/dashboard/readiness                       → ReadinessReport
+GET    /api/dashboard/readiness/export                → File (PDF or markdown download)
 ```
 
-### Scenarios Endpoint
+### Scenario Endpoints
 
 ```
-GET    /api/scenarios                       → List[ScenarioDefinition] (available scenarios)
-GET    /api/scenarios/{name}                → ScenarioDefinition (scenario details + criteria)
+GET    /api/scenarios                                 → { data: [ScenarioDefinition], pagination }
+GET    /api/scenarios/{scenario_name}                 → ScenarioDefinition (scenario details + criteria)
 ```
 
 ---
