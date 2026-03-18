@@ -84,22 +84,22 @@ Can run seed script, then `GET /api/practices/{id}` returns full BrightCare conf
 
 ## Phase 1C — Mocked Tools
 
-**Status:** Not started
+**Status:** Complete
 
 ### Tasks
-- [ ] Create `backend/tools/mock_data.py` — structured BRIGHTCARE_DATA dict (providers with schedules, locations, insurance lists, appointment types)
-- [ ] Create `backend/tools/base.py` — BaseTool class + ToolResult dataclass + tool registry
-- [ ] Implement 6 tools in `backend/tools/`:
-  - [ ] `clinic_hours.py` — get_clinic_hours
-  - [ ] `provider_availability.py` — lookup_provider_availability
-  - [ ] `appointment_slots.py` — lookup_appointment_slots
-  - [ ] `insurance_check.py` — check_insurance_acceptance
-  - [ ] `callback_request.py` — create_staff_callback_request
-  - [ ] `billing_route.py` — route_billing_question
-- [ ] Each tool must have: conditional logic, proper error handling, force_failure support
-- [ ] Create `backend/services/tool_executor.py` — dispatch by name, log to DB, return ToolResult
-- [ ] Create Anthropic-format tool definitions (used by orchestrator)
-- [ ] Verify: call each tool programmatically with sample inputs
+- [x] Create `backend/tools/mock_data.py` — structured BRIGHTCARE_DATA dict (providers with schedules, locations, insurance lists, appointment types)
+- [x] Create `backend/tools/base.py` — BaseTool class + ToolResult dataclass + tool registry
+- [x] Implement 6 tools in `backend/tools/`:
+  - [x] `clinic_hours.py` — get_clinic_hours
+  - [x] `provider_availability.py` — lookup_provider_availability
+  - [x] `appointment_slots.py` — lookup_appointment_slots
+  - [x] `insurance_check.py` — check_insurance_acceptance
+  - [x] `callback_request.py` — create_staff_callback_request
+  - [x] `billing_route.py` — route_billing_question
+- [x] Each tool must have: conditional logic, proper error handling, force_failure support
+- [x] Create `backend/services/tool_executor.py` — dispatch by name, log to DB, return ToolResult
+- [x] Create Anthropic-format tool definitions (used by orchestrator)
+- [x] Verify: call each tool programmatically with sample inputs
 
 ### Done When
 All 6 tools return realistic, conditional responses. Tool executor can dispatch by name and log calls. Tool definitions are ready for the Anthropic API.
