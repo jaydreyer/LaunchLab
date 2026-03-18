@@ -22,6 +22,16 @@ Use `/phase-complete` to generate the phase note automatically at the end of a p
 - `/phase-complete` — generates a structured phase completion doc, commits, and pushes it
 - `/rest-standards` — enforces Jay's REST API conventions (snake_case paths, PATCH over PUT, no verbs, etc.)
 
+## How to Use the Docs
+The architecture doc, scope doc, and implementation checklist describe **intent, not rigid contracts**.
+Pseudocode is directional — adapt it to what works in practice. If an implementation detail in the
+docs doesn't hold up against real code (e.g., a data flow is awkward, an API shape doesn't fit),
+**flag the deviation to Jay, explain why, and update the doc** so it stays accurate. The docs should
+always reflect the actual state of the project, not an outdated plan.
+
+What IS rigid: the tech stack, the three-LLM-subsystem separation, and the REST API standards.
+Everything else can flex.
+
 ## Critical Rules
 - **Tech stack is locked.** Do not introduce new dependencies without explicit approval.
 - **Three LLM subsystems are architecturally separate.** Never mix Healthcare Agent, Patient Simulator, and LLM-as-Judge in a single API call.
