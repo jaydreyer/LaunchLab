@@ -1,0 +1,64 @@
+[project]
+name = "launchlab"
+version = "0.1.0"
+description = "Healthcare Agent Launch Simulator"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.34.0",
+    "sqlalchemy[asyncio]>=2.0.0",
+    "aiosqlite>=0.21.0",
+    "alembic>=1.14.0",
+    "pydantic>=2.10.0",
+    "pydantic-settings>=2.7.0",
+    "anthropic>=0.49.0",
+    "python-dotenv>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.25.0",
+    "httpx>=0.28.0",
+    "black>=24.0.0",
+    "ruff>=0.9.0",
+    "pre-commit>=4.0.0",
+]
+
+[tool.black]
+line-length = 88
+target-version = ["py312"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 88
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort (import sorting)
+    "N",    # pep8-naming
+    "UP",   # pyupgrade (modern Python syntax)
+    "B",    # flake8-bugbear (common bugs)
+    "S",    # flake8-bandit (security)
+    "T20",  # flake8-print (no print statements)
+    "SIM",  # flake8-simplify
+    "ASYNC",# flake8-async
+]
+ignore = [
+    "S101",  # allow assert in tests
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["S101", "T20"]
+"seed/**/*.py" = ["T20"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["launchlab"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
