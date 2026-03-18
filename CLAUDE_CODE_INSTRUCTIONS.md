@@ -38,8 +38,8 @@ This is a portfolio project targeting Solutions Engineer and AI-focused roles. I
 - **Axios** for HTTP client
 
 ### Infrastructure
-- FastAPI serves the React production build as static files
-- Cloudflare Tunnel for public exposure (configured separately)
+- Frontend hosted on **Cloudflare Pages** (free tier, edge CDN, auto-deploys from GitHub)
+- Backend API exposed via **Cloudflare Tunnel** from Jay's AI lab server
 - Environment variables via `.env` file (python-dotenv)
 
 ---
@@ -247,6 +247,7 @@ When working on a specific area, consult these files:
 - Dark editor theme for code/config editing areas
 - Green/amber/red status indicators
 - No gratuitous animations
+- **Mobile-responsive** — all screens must work on phone viewports (Jay demos at networking events on mobile). Sidebar collapses to hamburger. Split-pane layouts stack vertically.
 - Should feel like an internal tool built by a competent team, not a consumer app
 
 ---
