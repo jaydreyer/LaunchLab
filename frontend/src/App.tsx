@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { Toaster } from "@/components/ui/sonner";
 import { AppShell } from "@/components/layout/AppShell";
 import PracticeSetup from "@/pages/PracticeSetup";
 import AgentConfig from "@/pages/AgentConfig";
@@ -25,6 +26,7 @@ function App() {
           </Route>
         </Routes>
       </TooltipProvider>
+      <Toaster richColors position="top-right" />
     </BrowserRouter>
   );
 }

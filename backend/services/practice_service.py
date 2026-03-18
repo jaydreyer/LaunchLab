@@ -9,6 +9,12 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
+async def list_practices(db: AsyncSession) -> list[PracticeProfile]:
+    """List all practice profiles."""
+    result = await db.execute(select(PracticeProfile))
+    return list(result.scalars().all())
+
+
 async def get_practice(db: AsyncSession, practice_id: str) -> PracticeProfile | None:
     """Fetch a single practice profile by ID."""
     result = await db.execute(
