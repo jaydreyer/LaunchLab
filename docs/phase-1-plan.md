@@ -1,6 +1,6 @@
 # Phase 1: Foundation — Execution Plan
 
-**Status:** In progress (1A–1D complete)
+**Status:** Complete (1A–1E all done)
 **Last Updated:** 2026-03-18
 
 ---
@@ -145,33 +145,33 @@ Can create a simulation session via curl, send messages, get agent responses wit
 
 ## Phase 1E — Frontend Scaffold
 
-**Status:** Not started
+**Status:** Complete
 
 ### Tasks
-- [ ] Scaffold React + Vite + TypeScript in `frontend/`
-- [ ] Install and configure Tailwind CSS
-- [ ] Install and configure shadcn/ui
-- [ ] Install React Router v7, Axios, Zustand
-- [ ] Create `frontend/src/api/client.ts` — Axios instance with base URL
-- [ ] Create layout components:
-  - [ ] `components/layout/AppShell.tsx` — main layout wrapper
-  - [ ] `components/layout/Sidebar.tsx` — navigation sidebar
-  - [ ] `components/layout/PageHeader.tsx` — page title + actions
-- [ ] Create 6 page stubs in `frontend/src/pages/`:
-  - [ ] `PracticeSetup.tsx`
-  - [ ] `AgentConfig.tsx`
-  - [ ] `Simulator.tsx`
-  - [ ] `SimulationTrace.tsx`
-  - [ ] `EvalRunner.tsx`
-  - [ ] `ReadinessDashboard.tsx`
-- [ ] Set up routing in `App.tsx` with all 6 routes
-- [ ] Configure Vite proxy to backend (port 8000)
-- [ ] Apply "Clinical Precision" design tokens (cool grays, teal accent, Inter font)
-- [ ] Make layout mobile-responsive:
-  - [ ] Sidebar collapses to hamburger menu on small screens
-  - [ ] Pages use responsive Tailwind breakpoints
-  - [ ] Split-pane layouts (used later in Simulator) will stack vertically on mobile
-- [ ] Verify: `npm run dev` shows all 6 pages navigable via sidebar on desktop and mobile viewports
+- [x] Scaffold React + Vite + TypeScript in `frontend/`
+- [x] Install and configure Tailwind CSS v4
+- [x] Install and configure shadcn/ui (v4 with base-ui)
+- [x] Install React Router v7, Axios, Zustand, Lucide icons
+- [x] Create `frontend/src/api/client.ts` — Axios instance with base URL
+- [x] Create layout components:
+  - [x] `components/layout/AppShell.tsx` — main layout wrapper
+  - [x] `components/layout/Sidebar.tsx` — navigation sidebar
+  - [x] `components/layout/PageHeader.tsx` — page title + actions
+- [x] Create 6 page stubs in `frontend/src/pages/`:
+  - [x] `PracticeSetup.tsx`
+  - [x] `AgentConfig.tsx`
+  - [x] `Simulator.tsx`
+  - [x] `SimulationTrace.tsx`
+  - [x] `EvalRunner.tsx`
+  - [x] `ReadinessDashboard.tsx`
+- [x] Set up routing in `App.tsx` with all 6 routes
+- [x] Configure Vite proxy to backend (port 8000)
+- [x] Apply "Clinical Precision" design tokens (cool grays, teal accent, Inter font)
+- [x] Make layout mobile-responsive:
+  - [x] Sidebar collapses to hamburger menu on small screens
+  - [x] Pages use responsive Tailwind breakpoints
+  - [x] Split-pane layouts (Simulator) stack vertically on mobile
+- [x] Verify: `npm run dev` starts, `npm run build` passes clean
 
 ### Done When
 Frontend runs on port 5173, all 6 pages are navigable via the sidebar (hamburger on mobile), layout looks clean with the Clinical Precision design direction. No data fetching yet — just stubs.
