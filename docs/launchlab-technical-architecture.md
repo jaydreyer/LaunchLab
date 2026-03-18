@@ -47,10 +47,10 @@ All three use the same model but with distinct system prompts and purposes. This
 ### Infrastructure
 | Layer | Choice | Rationale |
 |-------|--------|-----------|
-| Hosting | Jay's AI lab server (Ubuntu 24.04) | Free, already set up |
-| Exposure | Cloudflare Tunnel | Free, custom domain, no port forwarding |
+| Backend Hosting | Jay's AI lab server (Ubuntu 24.04) | Free, already set up |
+| Backend Exposure | Cloudflare Tunnel | Free, custom domain, no port forwarding |
+| Frontend Deploy | Cloudflare Pages | Free tier, no Vercel slots available |
 | Process Manager | systemd or PM2 | Keep backend running |
-| Frontend Deploy | Served by FastAPI static files OR Cloudflare Pages | Either works; static files is simpler |
 
 ---
 
@@ -1024,54 +1024,58 @@ CREATE TABLE eval_cases (
 ```
 ┌─────────────────────────────────────────┐
 │            User's Browser                │
-│  (React + Vite SPA)                      │
+│  (desktop or mobile)                     │
 │  launchlab.jaydreyer.com                 │
-└────────────────┬────────────────────────┘
-                 │ HTTPS
-                 ▼
-┌─────────────────────────────────────────┐
-│         Cloudflare Tunnel                │
-│  (free, custom domain, SSL)              │
-└────────────────┬────────────────────────┘
-                 │
-                 ▼
-┌─────────────────────────────────────────┐
-│       Jay's AI Lab Server                │
-│       Ubuntu 24.04                       │
-│                                          │
-│  ┌──────────────────────────────────┐    │
-│  │  FastAPI (port 8000)              │    │
-│  │  - API routes                     │    │
-│  │  - Serves React static build      │    │
-│  │  - SQLite DB in /data             │    │
-│  └──────────┬───────────────────────┘    │
-│             │                            │
-│             ▼                            │
-│  ┌──────────────────────────────────┐    │
-│  │  Anthropic API                    │    │
-│  │  (Claude Sonnet 4)                │    │
-│  │  - Healthcare agent calls         │    │
-│  │  - Patient simulator calls        │    │
-│  │  - LLM-as-Judge eval calls        │    │
-│  └──────────────────────────────────┘    │
-└─────────────────────────────────────────┘
+└───────┬─────────────────┬──────────────┘
+        │ HTTPS            │ HTTPS
+        ▼                  ▼
+┌──────────────────┐  ┌──────────────────────────┐
+│  Cloudflare Pages │  │   Cloudflare Tunnel       │
+│  (frontend SPA)   │  │   (API proxy)             │
+│  Static hosting   │  │   api.launchlab.          │
+│  Free tier        │  │   jaydreyer.com           │
+└──────────────────┘  └────────────┬─────────────┘
+                                    │
+                                    ▼
+                      ┌──────────────────────────┐
+                      │  Jay's AI Lab Server      │
+                      │  Ubuntu 24.04             │
+                      │                           │
+                      │  ┌─────────────────────┐  │
+                      │  │ FastAPI (port 8000)  │  │
+                      │  │ - API routes only    │  │
+                      │  │ - SQLite DB in /data │  │
+                      │  └────────┬────────────┘  │
+                      │           │               │
+                      │           ▼               │
+                      │  ┌─────────────────────┐  │
+                      │  │ Anthropic API        │  │
+                      │  │ (Claude Sonnet 4)    │  │
+                      │  │ - Healthcare agent   │  │
+                      │  │ - Patient simulator  │  │
+                      │  │ - LLM-as-Judge       │  │
+                      │  └─────────────────────┘  │
+                      └──────────────────────────┘
 ```
 
 ### Deployment Steps
 
 1. Build React frontend: `cd frontend && npm run build`
-2. FastAPI serves the built static files from `frontend/dist/`
-3. Configure Cloudflare Tunnel: `cloudflared tunnel --url http://localhost:8000`
-4. Set up as systemd service for persistence
-5. Store Anthropic API key in `.env` on the server (never in the repo)
+2. Deploy frontend to Cloudflare Pages (connected to GitHub repo, auto-deploys on push)
+3. Configure Cloudflare Tunnel on AI lab server: `cloudflared tunnel --url http://localhost:8000`
+4. Point tunnel to a subdomain (e.g., `api.launchlab.jaydreyer.com`)
+5. Set up FastAPI as systemd service for persistence
+6. Configure CORS on FastAPI to allow the Cloudflare Pages origin
+7. Store Anthropic API key in `.env` on the server (never in the repo)
 
 ### Why This Architecture
 
-- **Single process** — FastAPI serves both API and static files, simplifying deployment
-- **No cloud dependencies** — runs entirely on your own hardware (except Anthropic API)
-- **Free hosting** — Cloudflare Tunnel is free tier, no Vercel/Supabase needed
+- **Split hosting** — frontend on Cloudflare Pages (edge CDN, fast globally), backend on home server (free compute)
+- **No cloud spend** — Cloudflare Pages free tier + Cloudflare Tunnel free tier
 - **Custom domain** — looks professional in a portfolio
+- **Mobile-friendly** — responsive design lets Jay demo at networking events on his phone
 - **API key safety** — key lives on the server, never exposed to the browser
+- **No Vercel dependency** — all free Vercel project slots are used
 
 ---
 
@@ -1195,6 +1199,7 @@ To complement the "Luxury Minimal" aesthetic of Recall.local while being distinc
 - **Data visualization:** Clean bar charts and gauges, no gratuitous animation
 - **Status indicators:** Green/amber/red for pass/warn/fail — familiar operational dashboard language
 - **Code/config areas:** Dark editor theme (like VS Code) embedded in the light UI
+- **Mobile-responsive:** All screens must work on mobile viewports (Jay demos at networking events on his phone). Use Tailwind responsive breakpoints. Sidebar collapses to hamburger menu on small screens. Split-pane layouts stack vertically on mobile.
 - **Overall feel:** A serious internal tool, not a consumer app — this is deliberate
 
 ---
