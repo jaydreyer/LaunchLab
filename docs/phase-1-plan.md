@@ -1,7 +1,7 @@
 # Phase 1: Foundation — Execution Plan
 
-**Status:** In progress (1A complete)
-**Last Updated:** 2026-03-17
+**Status:** In progress (1A–1D complete)
+**Last Updated:** 2026-03-18
 
 ---
 
@@ -113,25 +113,25 @@ All 6 tools return realistic, conditional responses. Tool executor can dispatch 
 
 ## Phase 1D — Orchestrator + Conversation Test
 
-**Status:** Not started
+**Status:** Complete
 
 ### Tasks
-- [ ] Create `backend/prompts/agent_system.py` — dynamic system prompt assembly from practice config + agent config
-- [ ] Create `backend/services/orchestrator.py`:
-  - [ ] Accept user message + session
-  - [ ] Assemble system prompt dynamically
-  - [ ] Build tool definitions from config
-  - [ ] Run agent loop: call Claude → handle tool_use → execute tool → loop until text response
-  - [ ] Check escalation triggers
-  - [ ] Return OrchestratorResponse (agent message + tool calls + escalation info)
-- [ ] Create `backend/schemas/simulation.py` — create session, send message, response schemas
-- [ ] Create `backend/services/simulation_service.py` — create session, process message
-- [ ] Create `backend/routers/simulations.py`:
-  - [ ] `POST /api/simulations` (create session)
-  - [ ] `POST /api/simulations/{simulation_id}/messages` (send message, get agent reply)
-  - [ ] `GET /api/simulations/{simulation_id}` (get session with transcript)
-- [ ] Register router in `main.py`
-- [ ] Verify: multi-turn curl conversation with tool calls logged
+- [x] Create `backend/prompts/agent_system.py` — dynamic system prompt assembly from practice config + agent config
+- [x] Create `backend/services/orchestrator.py`:
+  - [x] Accept user message + session
+  - [x] Assemble system prompt dynamically
+  - [x] Build tool definitions from config
+  - [x] Run agent loop: call Claude → handle tool_use → execute tool → loop until text response
+  - [x] Check escalation triggers
+  - [x] Return OrchestratorResponse (agent message + tool calls + escalation info)
+- [x] Create `backend/schemas/simulation.py` — create session, send message, response schemas
+- [x] Create `backend/services/simulation_service.py` — create session, process message
+- [x] Create `backend/routers/simulations.py`:
+  - [x] `POST /api/simulations` (create session)
+  - [x] `POST /api/simulations/{simulation_id}/messages` (send message, get agent reply)
+  - [x] `GET /api/simulations/{simulation_id}` (get session with transcript)
+- [x] Register router in `main.py`
+- [x] Verify: multi-turn curl conversation with tool calls logged
 
 ### Done When
 Can create a simulation session via curl, send messages, get agent responses with tool calls, and see tool calls logged in the DB. The dynamic system prompt correctly reflects practice + agent config.
