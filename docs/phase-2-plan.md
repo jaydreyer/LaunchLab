@@ -1,0 +1,275 @@
+# Phase 2: Simulation Core — Execution Plan
+
+**Status:** Not started
+**Last Updated:** 2026-03-18
+
+---
+
+## Overview
+
+Phase 2 takes the scaffolded frontend and working backend (orchestrator, tools, APIs) from Phase 1
+and connects them into a functional end-to-end simulation loop. By the end, a user can configure a
+practice, tweak agent behavior, run conversations in the simulator, inspect tool traces, and see
+the patient simulator auto-respond.
+
+Phase 2 maps to checklist tickets 1.5, 2.5, 4.4, 4.5, 5.1–5.4, 6.1–6.5, and 7.1–7.4.
+
+Phase 2 is split into sub-phases so work can span multiple sessions with clean context boundaries.
+
+---
+
+## Phase 2A — Practice Setup Screen
+
+**Status:** Not started
+
+### Tasks
+- [ ] Create API hooks in `frontend/src/api/`:
+  - [ ] `practices.ts` — `getPractice`, `updatePractice`, `resetPractice`, `loadSamplePractice`
+- [ ] Create Zustand store `frontend/src/stores/practiceStore.ts` for practice state
+- [ ] Build Practice Setup page sections (replace stub in `PracticeSetup.tsx`):
+  - [ ] Practice name (text input with save)
+  - [ ] Locations section (editable card list — add/remove/edit name, address, same-day flags)
+  - [ ] Providers section (editable table — name, title, locations, appointment types)
+  - [ ] Hours section (day-of-week grid with open/close time inputs)
+  - [ ] Appointment Types section (editable table — name, duration, constraints)
+  - [ ] Insurance Rules section (accepted/not accepted/uncertain lists with add/remove)
+  - [ ] Escalation Rules section (editable list of trigger conditions)
+- [ ] Add action buttons: Save | Reset to Defaults | Load Sample (BrightCare)
+- [ ] "Load Sample" should be visually prominent for demo purposes
+- [ ] Add loading and error states
+- [ ] Add success toast/notification on save
+- [ ] Verify: load page, click Load Sample, see BrightCare data populate, edit a field, save, refresh and see changes persisted
+
+### Done When
+Practice Setup page is fully functional. Can load BrightCare defaults, view all sections, edit any field, save changes, and reset to defaults. Data round-trips through the backend API.
+
+### Key References
+- Screen spec: `docs/launchlab-technical-architecture.md` Section 11 (Screen 1)
+- Feature list: `docs/launchlab-v1-scope.md` Screen 1
+- Practice API: `backend/routers/practices.py` (already built)
+- Schemas: `backend/schemas/practice.py` (already built)
+- Checklist: Epic 1, ticket 1.5
+
+---
+
+## Phase 2B — Agent Config Screen
+
+**Status:** Not started
+
+### Tasks
+- [ ] Create API hooks in `frontend/src/api/`:
+  - [ ] `agentConfigs.ts` — `getAgentConfig`, `updateAgentConfig`, `resetAgentConfig`
+- [ ] Create Zustand store `frontend/src/stores/agentConfigStore.ts`
+- [ ] Build Agent Config page (replace stub in `AgentConfig.tsx`):
+  - [ ] Two-column layout: editor (left) + preview (right)
+  - [ ] System prompt editor (textarea or CodeMirror if already available; keep lightweight for now)
+  - [ ] Workflow steps editor (ordered list — add/remove/reorder steps)
+  - [ ] Guardrails editor (editable list of rules)
+  - [ ] Escalation triggers editor (editable list with keywords and actions)
+  - [ ] Tool policy editor (toggle tools on/off, show tool names from config)
+  - [ ] Tone guidelines editor (text area)
+- [ ] Build live preview panel (right column):
+  - [ ] Read-only display of the assembled system prompt as Claude would receive it
+  - [ ] Call a preview endpoint or assemble client-side from current form state
+- [ ] Add action buttons: Save | Reset to Defaults
+- [ ] Add loading, error, and success states
+- [ ] Verify: load page, see current agent config, edit guardrails, save, see preview update
+
+### Done When
+Agent Config page shows all config sections in editable form. Live preview shows the assembled system prompt. Save persists changes through the API. Reset restores defaults.
+
+### Key References
+- Screen spec: `docs/launchlab-technical-architecture.md` Section 11 (Screen 2)
+- Feature list: `docs/launchlab-v1-scope.md` Screen 2
+- Agent Config API: `backend/routers/agent_configs.py` (already built)
+- System prompt assembly: `backend/prompts/agent_system.py` (already built)
+- Checklist: Epic 2, ticket 2.5
+
+### Notes
+- The architecture doc mentions CodeMirror 6 for the prompt editor. If adding it requires a new dependency, flag it and use a plain textarea as fallback. Do not block on this.
+- The "Run Quick Test" button and config diff view are nice-to-haves. Defer to Phase 2C or later if they add scope.
+
+---
+
+## Phase 2C — Simulator Screen (Chat UI + Session Management)
+
+**Status:** Not started
+
+### Tasks
+- [ ] Create API hooks in `frontend/src/api/`:
+  - [ ] `simulations.ts` — `createSimulation`, `getSimulation`, `sendMessage`, `listSimulations`
+- [ ] Create Zustand store `frontend/src/stores/simulationStore.ts` for active session state
+- [ ] Build Simulator page top bar controls:
+  - [ ] Scenario picker dropdown (hardcoded scenario list for now — names only)
+  - [ ] Channel mode toggle (Chat | SMS) — styling difference only for v1
+  - [ ] New Session button
+  - [ ] Rerun / Reset controls
+- [ ] Build left pane — chat transcript:
+  - [ ] Chat bubble UI (user messages on right, agent on left)
+  - [ ] Message input with send button
+  - [ ] Loading indicator while agent is responding
+  - [ ] Escalation banner (appears inline when `escalation` is returned)
+  - [ ] Outcome badge at conversation end
+  - [ ] Auto-scroll to latest message
+- [ ] Build right pane — inline trace panel (lightweight version):
+  - [ ] Scenario info card (name, description)
+  - [ ] Tool call log (collapsible cards showing tool name, input, output, status)
+  - [ ] Escalation marker with trigger reason
+  - [ ] Turn counter
+- [ ] Handle session lifecycle:
+  - [ ] Creating a session calls `POST /api/simulations`
+  - [ ] Each message calls `POST /api/simulations/{id}/messages`
+  - [ ] Reload session state on page revisit via `GET /api/simulations/{id}`
+- [ ] Add SMS-style transcript variant (alternate bubble styling, kept lightweight)
+- [ ] Mobile responsive: stack panes vertically on small screens
+- [ ] Verify: create session, send messages, see agent responses with tool calls in trace panel, trigger escalation with urgent symptom keyword
+
+### Done When
+Can start a new simulation session, have a multi-turn conversation with the agent, see tool calls in the trace panel, see escalation banners, and switch between chat/SMS styling. The full conversation round-trips through the backend orchestrator.
+
+### Key References
+- Screen spec: `docs/launchlab-technical-architecture.md` Section 11 (Screen 3)
+- Feature list: `docs/launchlab-v1-scope.md` Screen 3
+- Simulation API: `backend/routers/simulations.py` (already built)
+- Orchestrator: `backend/services/orchestrator.py` (already built)
+- Checklist: Epic 4, tickets 4.4 and 4.5
+
+---
+
+## Phase 2D — Trace Panel + Simulation Trace Detail Page
+
+**Status:** Not started
+
+### Tasks
+- [ ] Add backend endpoint for tool calls:
+  - [ ] `GET /api/simulations/{simulation_id}/tool_calls` — returns tool calls for a session
+  - [ ] Create `backend/schemas/tool_call.py` if needed for response schema
+- [ ] Add backend endpoint for listing sessions:
+  - [ ] `GET /api/simulations` — returns session summaries (latest first)
+- [ ] Enhance trace panel in Simulator (right pane):
+  - [ ] Tool call cards are expandable — show full input/output JSON
+  - [ ] Color-code tool status (success = green, error = red)
+  - [ ] Show tool call duration if available
+  - [ ] "View Full Trace" link to open Simulation Trace detail page
+- [ ] Build Simulation Trace detail page (`SimulationTrace.tsx`):
+  - [ ] Full-width timeline layout
+  - [ ] Full transcript with inline tool call annotations (tool calls shown between messages)
+  - [ ] Expandable tool call details (input/output JSON)
+  - [ ] Escalation event marker (if triggered)
+  - [ ] Final outcome card
+  - [ ] Session metadata (scenario name, channel mode, timestamps)
+  - [ ] Back link to Simulator
+- [ ] Add route param support: `/simulator/:id/trace`
+- [ ] Verify: run a conversation, click "View Full Trace," see timeline with tool calls inline, see escalation marker
+
+### Done When
+Tool calls endpoint returns data. Trace panel in the Simulator shows tool calls with expandable detail. Simulation Trace page shows a full timeline view of a completed conversation with inline annotations, tool details, and outcome.
+
+### Key References
+- Screen spec: `docs/launchlab-technical-architecture.md` Section 11 (Screen 4)
+- Feature list: `docs/launchlab-v1-scope.md` Screen 4
+- Tool call model: `backend/models/tool_call.py` (already built)
+- Tool executor logging: `backend/services/tool_executor.py` (already logs to DB)
+- Checklist: Epic 5, tickets 5.1–5.4
+
+### Notes
+- Tool calls are already logged to the DB by `tool_executor.py`. This sub-phase mainly adds the API endpoint to retrieve them and the frontend to display them.
+
+---
+
+## Phase 2E — Patient Simulator (LLM-Powered Auto-Respond)
+
+**Status:** Not started
+
+### Tasks
+- [ ] Create scenario definitions in `backend/scenarios/`:
+  - [ ] `definitions.py` — scenario registry with name, description, patient persona prompt, expected outcome, tool overrides
+  - [ ] Define initial scenarios:
+    - [ ] Reschedule existing appointment (happy path)
+    - [ ] Book annual physical (happy path)
+    - [ ] Missing information during reschedule
+    - [ ] No slots available
+    - [ ] Tool failure during slot lookup
+    - [ ] Ask clinic hours
+    - [ ] Billing question
+    - [ ] Urgent symptom escalation
+- [ ] Create `backend/services/patient_simulator.py`:
+  - [ ] Accept scenario persona prompt + conversation history
+  - [ ] Call Claude with a separate system prompt (patient persona)
+  - [ ] Return a realistic patient message
+  - [ ] This is a distinct LLM subsystem — must use its own system prompt, never mixed with the Healthcare Agent call
+- [ ] Create `backend/routers/scenarios.py`:
+  - [ ] `GET /api/scenarios` — list all scenario definitions
+  - [ ] `GET /api/scenarios/{scenario_name}` — get scenario details
+- [ ] Add auto-respond endpoint:
+  - [ ] `POST /api/simulations/{simulation_id}/auto_responses` — patient simulator generates next message, then sends it through the orchestrator
+- [ ] Register new router in `main.py`
+- [ ] Update frontend Simulator page:
+  - [ ] Populate scenario picker dropdown from `GET /api/scenarios`
+  - [ ] Add "Auto-respond" button that calls the auto-respond endpoint
+  - [ ] Show patient simulator messages with a distinct visual style (auto-generated vs. manual)
+  - [ ] When scenario is selected on new session, pass `scenario_name` to session creation
+- [ ] Verify: select a scenario, click Auto-respond repeatedly, watch a full conversation play out automatically with tool calls and realistic patient behavior
+
+### Done When
+Scenario definitions exist in the backend and are served via API. Patient simulator generates realistic messages based on persona prompts. Auto-respond button in the Simulator drives the conversation forward. A reschedule scenario can run to completion automatically.
+
+### Key References
+- Patient simulator architecture: `docs/launchlab-technical-architecture.md` Section 5
+- Scenario API spec: `docs/launchlab-technical-architecture.md` Section 9 (Scenario Endpoints)
+- Auto-respond endpoint: `docs/launchlab-technical-architecture.md` Section 9 (Simulation Endpoints)
+- Scenario suite: `docs/launchlab-technical-architecture.md` Section 12
+- Checklist: Epic 6, tickets 6.1 and 6.5; Epic 7, ticket 7.4
+
+### Notes
+- The patient simulator is the second of the three LLM subsystems. It must be architecturally separate from the Healthcare Agent. Use a distinct system prompt and a separate Claude API call.
+- Scenarios serve double duty: they power the auto-respond feature in the Simulator and will later be used by the eval runner in Phase 3.
+
+---
+
+## Phase 2F — Scenarios + Secondary Intents (Workflow Routing, Billing, Escalation)
+
+**Status:** Not started
+
+### Tasks
+- [ ] Verify and tune primary workflow (rescheduling):
+  - [ ] Run reschedule happy path end-to-end — confirm intent detection, info collection, tool use, confirmation
+  - [ ] Run "missing info" scenario — confirm agent asks before acting
+  - [ ] Run "no slots available" scenario — confirm graceful handling
+  - [ ] Run "tool failure" scenario — confirm agent doesn't fabricate data
+  - [ ] Tune system prompt and workflow steps if any scenario behaves poorly
+- [ ] Verify and tune secondary intents:
+  - [ ] Clinic hours / location intent — agent calls `get_clinic_hours` and responds clearly
+  - [ ] Billing question — agent routes via `route_billing_question`, does not answer specifics
+  - [ ] Insurance question — agent calls `check_insurance_acceptance`, handles uncertain result
+  - [ ] Urgent symptom escalation — agent stops scheduling flow, escalates immediately
+  - [ ] Unsupported request — agent declines cleanly, offers supported alternatives
+- [ ] Update scenario definitions if needed (add/adjust persona prompts, tool overrides)
+- [ ] Add scenario metadata for eval readiness:
+  - [ ] `expected_outcome` field on each scenario
+  - [ ] `category` field (scheduling, escalation, info, routing, unsupported)
+  - [ ] `evaluation_criteria` stubs (will be fully implemented in Phase 3)
+- [ ] Verify: each of the 8–10 built-in scenarios runs to a reasonable completion via auto-respond, with correct tool usage, escalation behavior, and routing
+
+### Done When
+All built-in scenarios produce reasonable agent behavior. Rescheduling works end-to-end. Billing routes correctly. Urgent symptoms escalate. Clinic hours queries return data. Each scenario has metadata ready for Phase 3 eval integration.
+
+### Key References
+- Workflow specs: `docs/launchlab-v1-scope.md` Section 5 (reschedule flow) and Section 6 (edge cases)
+- Scenario suite: `docs/launchlab-technical-architecture.md` Section 12
+- Escalation design: `backend/services/orchestrator.py` `_check_escalation` method
+- Tool implementations: `backend/tools/` (all 6 tools already built)
+- Checklist: Epic 6, tickets 6.1–6.5; Epic 7, tickets 7.1–7.4
+
+### Notes
+- This sub-phase is more about testing and tuning than building new features. The orchestrator, tools, and prompt assembly are already in place. The work here is making sure the scenarios actually produce good behavior and fixing any issues found.
+- Prompt tuning may involve changes to `backend/seed/agent_defaults.py` (default agent config) and `backend/prompts/agent_system.py` (prompt assembly logic).
+- Document any prompt engineering decisions or non-obvious tuning in the session handoff notes.
+
+---
+
+## Session Handoff Notes
+
+_Use this section to leave notes for the next session if work is paused mid-sub-phase._
+
+(none yet)
