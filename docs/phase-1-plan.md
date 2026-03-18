@@ -48,29 +48,29 @@ App starts clean on port 8000 with all tables in SQLite. No seed data yet, no AP
 
 ## Phase 1B — Seed Data + Practice/Agent Config APIs
 
-**Status:** Not started
+**Status:** Complete
 
 ### Tasks
-- [ ] Create `backend/seed/brightcare.py` — BrightCare practice profile data
+- [x] Create `backend/seed/brightcare.py` — BrightCare practice profile data
   - 2 locations, 4 providers, clinic hours, appointment types, insurance rules, escalation rules
-- [ ] Create `backend/seed/agent_defaults.py` — default agent config (system prompt, workflow steps, guardrails, escalation triggers, tool policy, tone guidelines)
-- [ ] Create Pydantic schemas in `backend/schemas/`:
-  - [ ] `practice.py` — create, update, response schemas
-  - [ ] `agent_config.py` — update, response schemas
-- [ ] Create `backend/services/practice_service.py` — CRUD + reset to defaults
-- [ ] Create `backend/services/agent_config_service.py` — CRUD + reset to defaults
-- [ ] Create `backend/routers/practices.py`:
-  - [ ] `GET /api/practices/{practice_id}`
-  - [ ] `POST /api/practices`
-  - [ ] `PATCH /api/practices/{practice_id}`
-  - [ ] `POST /api/practice_resets`
-- [ ] Create `backend/routers/agent_configs.py`:
-  - [ ] `GET /api/agent_configs/{agent_config_id}`
-  - [ ] `PATCH /api/agent_configs/{agent_config_id}`
-  - [ ] `POST /api/agent_config_resets`
-- [ ] Create seed script (`backend/seed/run_seed.py` or CLI command) to populate DB with BrightCare defaults
-- [ ] Register routers in `main.py`
-- [ ] Verify: seed DB, then curl all endpoints successfully
+- [x] Create `backend/seed/agent_defaults.py` — default agent config (system prompt, workflow steps, guardrails, escalation triggers, tool policy, tone guidelines)
+- [x] Create Pydantic schemas in `backend/schemas/`:
+  - [x] `practice.py` — create, update, response schemas
+  - [x] `agent_config.py` — update, response schemas
+- [x] Create `backend/services/practice_service.py` — CRUD + reset to defaults
+- [x] Create `backend/services/agent_config_service.py` — CRUD + reset to defaults
+- [x] Create `backend/routers/practices.py`:
+  - [x] `GET /api/practices/{practice_id}`
+  - [x] `POST /api/practices`
+  - [x] `PATCH /api/practices/{practice_id}`
+  - [x] `POST /api/practice_resets`
+- [x] Create `backend/routers/agent_configs.py`:
+  - [x] `GET /api/agent_configs/{agent_config_id}`
+  - [x] `PATCH /api/agent_configs/{agent_config_id}`
+  - [x] `POST /api/agent_config_resets`
+- [x] Create seed script (`backend/seed/run_seed.py` or CLI command) to populate DB with BrightCare defaults
+- [x] Register routers in `main.py`
+- [x] Verify: seed DB, then curl all endpoints successfully
 
 ### Done When
 Can run seed script, then `GET /api/practices/{id}` returns full BrightCare config and `GET /api/agent_configs/{id}` returns default agent config.
