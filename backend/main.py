@@ -4,6 +4,10 @@ from contextlib import asynccontextmanager
 from config import settings
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from routers.agent_configs import reset_router as agent_config_reset_router
+from routers.agent_configs import router as agent_configs_router
+from routers.practices import reset_router as practice_reset_router
+from routers.practices import router as practices_router
 
 logger = logging.getLogger(__name__)
 
@@ -31,6 +35,12 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+app.include_router(practices_router)
+app.include_router(practice_reset_router)
+app.include_router(agent_configs_router)
+app.include_router(agent_config_reset_router)
 
 
 @app.get("/api/health")

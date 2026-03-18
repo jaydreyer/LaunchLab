@@ -55,6 +55,7 @@ ignore = [
 [tool.ruff.lint.per-file-ignores]
 "tests/**/*.py" = ["S101", "T20"]
 "seed/**/*.py" = ["T20"]
+"**/routers/**/*.py" = ["B008"]  # Depends() in defaults is standard FastAPI
 
 [tool.ruff.lint.isort]
 known-first-party = ["launchlab"]
