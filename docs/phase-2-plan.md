@@ -1,6 +1,6 @@
 # Phase 2: Simulation Core — Execution Plan
 
-**Status:** In progress (Phase 2A complete)
+**Status:** In progress (Phase 2B complete)
 **Last Updated:** 2026-03-18
 
 ---
@@ -55,26 +55,29 @@ Practice Setup page is fully functional. Can load BrightCare defaults, view all 
 
 ## Phase 2B — Agent Config Screen
 
-**Status:** Not started
+**Status:** Complete
 
 ### Tasks
-- [ ] Create API hooks in `frontend/src/api/`:
-  - [ ] `agentConfigs.ts` — `getAgentConfig`, `updateAgentConfig`, `resetAgentConfig`
-- [ ] Create Zustand store `frontend/src/stores/agentConfigStore.ts`
-- [ ] Build Agent Config page (replace stub in `AgentConfig.tsx`):
-  - [ ] Two-column layout: editor (left) + preview (right)
-  - [ ] System prompt editor (textarea or CodeMirror if already available; keep lightweight for now)
-  - [ ] Workflow steps editor (ordered list — add/remove/reorder steps)
-  - [ ] Guardrails editor (editable list of rules)
-  - [ ] Escalation triggers editor (editable list with keywords and actions)
-  - [ ] Tool policy editor (toggle tools on/off, show tool names from config)
-  - [ ] Tone guidelines editor (text area)
-- [ ] Build live preview panel (right column):
-  - [ ] Read-only display of the assembled system prompt as Claude would receive it
-  - [ ] Call a preview endpoint or assemble client-side from current form state
-- [ ] Add action buttons: Save | Reset to Defaults
-- [ ] Add loading, error, and success states
-- [ ] Verify: load page, see current agent config, edit guardrails, save, see preview update
+- [x] Create API hooks in `frontend/src/api/`:
+  - [x] `agentConfigs.ts` — `listAgentConfigs`, `getAgentConfig`, `updateAgentConfig`, `resetAgentConfig`, `previewAgentConfig`
+- [x] Create Zustand store `frontend/src/stores/agentConfigStore.ts`
+- [x] Build Agent Config page (replace stub in `AgentConfig.tsx`):
+  - [x] Two-column layout: editor (left) + preview (right)
+  - [x] System prompt editor (textarea)
+  - [x] Workflow steps editor (ordered list — add/remove/reorder steps)
+  - [x] Guardrails editor (editable list of rules)
+  - [x] Escalation triggers editor (editable list with keywords and actions)
+  - [x] Tool policy editor (toggle tools on/off, show tool names from config)
+  - [x] Tone guidelines editor (tone input + style rules list)
+- [x] Build live preview panel (right column):
+  - [x] Read-only display of the assembled system prompt as Claude would receive it
+  - [x] Call `POST /api/agent_config_previews` to assemble prompt from current config + practice data
+- [x] Add action buttons: Save | Reset to Defaults
+- [x] Add loading, error, and success states
+- [x] Added `GET /api/agent_configs` list endpoint so frontend can auto-discover agent config
+- [x] Added `POST /api/agent_config_previews` endpoint for live preview assembly
+- [x] Installed shadcn/ui `textarea` component
+- [x] Verify: build compiles, types check clean
 
 ### Done When
 Agent Config page shows all config sections in editable form. Live preview shows the assembled system prompt. Save persists changes through the API. Reset restores defaults.

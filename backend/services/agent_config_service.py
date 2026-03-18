@@ -9,6 +9,14 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
+async def list_agent_configs(db: AsyncSession) -> list[AgentConfig]:
+    """List all agent configs (newest first)."""
+    result = await db.execute(
+        select(AgentConfig).order_by(AgentConfig.updated_at.desc())
+    )
+    return list(result.scalars().all())
+
+
 async def get_agent_config(
     db: AsyncSession, agent_config_id: str
 ) -> AgentConfig | None:
