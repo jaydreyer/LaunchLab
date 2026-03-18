@@ -16,6 +16,11 @@ Before making any changes, read these documents:
 
 ## Phase Completion Notes
 After each phase, check `docs/phase-notes/` for context on what was built, decisions made, and challenges resolved.
+Use `/phase-complete` to generate the phase note automatically at the end of a phase.
+
+## Custom Skills
+- `/phase-complete` — generates a structured phase completion doc, commits, and pushes it
+- `/rest-standards` — enforces Jay's REST API conventions (snake_case paths, PATCH over PUT, no verbs, etc.)
 
 ## Critical Rules
 - **Tech stack is locked.** Do not introduce new dependencies without explicit approval.
