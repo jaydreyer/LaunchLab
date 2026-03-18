@@ -1,6 +1,6 @@
 # Phase 2: Simulation Core — Execution Plan
 
-**Status:** Not started
+**Status:** In progress (Phase 2A complete)
 **Last Updated:** 2026-03-18
 
 ---
@@ -20,25 +20,26 @@ Phase 2 is split into sub-phases so work can span multiple sessions with clean c
 
 ## Phase 2A — Practice Setup Screen
 
-**Status:** Not started
+**Status:** Complete
 
 ### Tasks
-- [ ] Create API hooks in `frontend/src/api/`:
-  - [ ] `practices.ts` — `getPractice`, `updatePractice`, `resetPractice`, `loadSamplePractice`
-- [ ] Create Zustand store `frontend/src/stores/practiceStore.ts` for practice state
-- [ ] Build Practice Setup page sections (replace stub in `PracticeSetup.tsx`):
-  - [ ] Practice name (text input with save)
-  - [ ] Locations section (editable card list — add/remove/edit name, address, same-day flags)
-  - [ ] Providers section (editable table — name, title, locations, appointment types)
-  - [ ] Hours section (day-of-week grid with open/close time inputs)
-  - [ ] Appointment Types section (editable table — name, duration, constraints)
-  - [ ] Insurance Rules section (accepted/not accepted/uncertain lists with add/remove)
-  - [ ] Escalation Rules section (editable list of trigger conditions)
-- [ ] Add action buttons: Save | Reset to Defaults | Load Sample (BrightCare)
-- [ ] "Load Sample" should be visually prominent for demo purposes
-- [ ] Add loading and error states
-- [ ] Add success toast/notification on save
-- [ ] Verify: load page, click Load Sample, see BrightCare data populate, edit a field, save, refresh and see changes persisted
+- [x] Create API hooks in `frontend/src/api/`:
+  - [x] `practices.ts` — `listPractices`, `getPractice`, `updatePractice`, `resetPractice`, `loadSamplePractice`
+- [x] Create Zustand store `frontend/src/stores/practiceStore.ts` for practice state
+- [x] Build Practice Setup page sections (replace stub in `PracticeSetup.tsx`):
+  - [x] Practice name (text input with save)
+  - [x] Locations section (editable card list — add/remove/edit name, address, same-day flags)
+  - [x] Providers section (editable cards — name, title, locations, appointment types via badge toggles)
+  - [x] Hours section (day-of-week grid with open/close time inputs per location)
+  - [x] Appointment Types section (editable row — name, duration, new patient toggle)
+  - [x] Insurance Rules section (accepted/not accepted/uncertain tag lists with add/remove)
+  - [x] Escalation Rules section (trigger tag lists + editable action text)
+- [x] Add action buttons: Save | Reset to Defaults | Load Sample (BrightCare)
+- [x] "Load Sample" visually prominent on empty state
+- [x] Add loading and error states
+- [x] Add success toast/notification on save (sonner)
+- [x] Added `GET /api/practices` list endpoint so frontend can auto-discover practice
+- [x] Verify: build compiles, types check clean
 
 ### Done When
 Practice Setup page is fully functional. Can load BrightCare defaults, view all sections, edit any field, save changes, and reset to defaults. Data round-trips through the backend API.

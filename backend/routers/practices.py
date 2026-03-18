@@ -9,6 +9,15 @@ from sqlalchemy.ext.asyncio import AsyncSession
 router = APIRouter(prefix="/api/practices", tags=["practices"])
 
 
+@router.get("", response_model=list[PracticeResponse])
+async def list_practices(
+    db: AsyncSession = Depends(get_db),
+) -> list[PracticeResponse]:
+    """List all practice profiles."""
+    practices = await practice_service.list_practices(db)
+    return [PracticeResponse.model_validate(p) for p in practices]
+
+
 @router.get("/{practice_id}", response_model=PracticeResponse)
 async def get_practice(
     practice_id: str, db: AsyncSession = Depends(get_db)
