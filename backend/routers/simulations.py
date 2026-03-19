@@ -7,11 +7,21 @@ from schemas.simulation import (
     MessageSend,
     SimulationCreate,
     SimulationResponse,
+    SimulationSummary,
 )
 from services import simulation_service
 from sqlalchemy.ext.asyncio import AsyncSession
 
 router = APIRouter(prefix="/api/simulations", tags=["simulations"])
+
+
+@router.get("", response_model=list[SimulationSummary])
+async def list_simulations(
+    db: AsyncSession = Depends(get_db),
+) -> list[SimulationSummary]:
+    """List all simulation sessions (newest first)."""
+    sessions = await simulation_service.list_sessions(db)
+    return [SimulationSummary.model_validate(s) for s in sessions]
 
 
 @router.post("", response_model=SimulationResponse, status_code=201)
