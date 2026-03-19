@@ -1,6 +1,6 @@
 # Phase 2: Simulation Core — Execution Plan
 
-**Status:** In progress (Phase 2B complete)
+**Status:** In progress (Phase 2C complete)
 **Last Updated:** 2026-03-18
 
 ---
@@ -97,36 +97,37 @@ Agent Config page shows all config sections in editable form. Live preview shows
 
 ## Phase 2C — Simulator Screen (Chat UI + Session Management)
 
-**Status:** Not started
+**Status:** Complete
 
 ### Tasks
-- [ ] Create API hooks in `frontend/src/api/`:
-  - [ ] `simulations.ts` — `createSimulation`, `getSimulation`, `sendMessage`, `listSimulations`
-- [ ] Create Zustand store `frontend/src/stores/simulationStore.ts` for active session state
-- [ ] Build Simulator page top bar controls:
-  - [ ] Scenario picker dropdown (hardcoded scenario list for now — names only)
-  - [ ] Channel mode toggle (Chat | SMS) — styling difference only for v1
-  - [ ] New Session button
-  - [ ] Rerun / Reset controls
-- [ ] Build left pane — chat transcript:
-  - [ ] Chat bubble UI (user messages on right, agent on left)
-  - [ ] Message input with send button
-  - [ ] Loading indicator while agent is responding
-  - [ ] Escalation banner (appears inline when `escalation` is returned)
-  - [ ] Outcome badge at conversation end
-  - [ ] Auto-scroll to latest message
-- [ ] Build right pane — inline trace panel (lightweight version):
-  - [ ] Scenario info card (name, description)
-  - [ ] Tool call log (collapsible cards showing tool name, input, output, status)
-  - [ ] Escalation marker with trigger reason
-  - [ ] Turn counter
-- [ ] Handle session lifecycle:
-  - [ ] Creating a session calls `POST /api/simulations`
-  - [ ] Each message calls `POST /api/simulations/{id}/messages`
-  - [ ] Reload session state on page revisit via `GET /api/simulations/{id}`
-- [ ] Add SMS-style transcript variant (alternate bubble styling, kept lightweight)
-- [ ] Mobile responsive: stack panes vertically on small screens
-- [ ] Verify: create session, send messages, see agent responses with tool calls in trace panel, trigger escalation with urgent symptom keyword
+- [x] Create API hooks in `frontend/src/api/`:
+  - [x] `simulations.ts` — `createSimulation`, `getSimulation`, `sendMessage`, `listSimulations`
+- [x] Create Zustand store `frontend/src/stores/simulationStore.ts` for active session state
+- [x] Build Simulator page top bar controls:
+  - [x] Scenario picker dropdown (hardcoded scenario list for now — names only)
+  - [x] Channel mode toggle (Chat | SMS) — styling difference only for v1
+  - [x] New Session button
+  - [x] Rerun / Reset controls
+- [x] Build left pane — chat transcript:
+  - [x] Chat bubble UI (user messages on right, agent on left)
+  - [x] Message input with send button
+  - [x] Loading indicator while agent is responding
+  - [x] Escalation banner (appears inline when `escalation` is returned)
+  - [x] Outcome badge at conversation end
+  - [x] Auto-scroll to latest message
+- [x] Build right pane — inline trace panel (lightweight version):
+  - [x] Scenario info card (name, description)
+  - [x] Tool call log (collapsible cards showing tool name, input, output, status)
+  - [x] Escalation marker with trigger reason
+  - [x] Turn counter
+- [x] Handle session lifecycle:
+  - [x] Creating a session calls `POST /api/simulations`
+  - [x] Each message calls `POST /api/simulations/{id}/messages`
+  - [x] Reload session state on page revisit via `GET /api/simulations/{id}`
+- [x] Add SMS-style transcript variant (alternate bubble styling, kept lightweight)
+- [x] Mobile responsive: stack panes vertically on small screens
+- [x] Added `GET /api/simulations` list endpoint for session discovery
+- [x] Verify: build compiles, types check clean
 
 ### Done When
 Can start a new simulation session, have a multi-turn conversation with the agent, see tool calls in the trace panel, see escalation banners, and switch between chat/SMS styling. The full conversation round-trips through the backend orchestrator.

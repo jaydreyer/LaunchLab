@@ -31,6 +31,14 @@ async def create_session(db: AsyncSession, data: SimulationCreate) -> Simulation
     return session
 
 
+async def list_sessions(db: AsyncSession) -> list[SimulationSession]:
+    """List all simulation sessions (newest first)."""
+    result = await db.execute(
+        select(SimulationSession).order_by(SimulationSession.started_at.desc())
+    )
+    return list(result.scalars().all())
+
+
 async def get_session(db: AsyncSession, session_id: str) -> SimulationSession | None:
     """Fetch a simulation session by ID."""
     result = await db.execute(
