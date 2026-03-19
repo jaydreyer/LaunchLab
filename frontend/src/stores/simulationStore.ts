@@ -7,6 +7,7 @@ import {
   createSimulation,
   getSimulation,
   sendMessage,
+  autoRespond as autoRespondApi,
 } from "@/api/simulations";
 
 export interface TrackedToolCall extends ToolCallOut {
@@ -31,6 +32,7 @@ interface SimulationState {
   ) => Promise<void>;
   fetchSession: (id: string) => Promise<void>;
   send: (content: string) => Promise<void>;
+  autoRespond: () => Promise<void>;
   setChannelMode: (mode: "chat" | "sms") => void;
   clearSession: () => void;
   clearError: () => void;
@@ -115,6 +117,43 @@ export const useSimulationStore = create<SimulationState>((set, get) => ({
     } catch (err) {
       const message =
         err instanceof Error ? err.message : "Failed to send message";
+      set({ error: message, sending: false });
+    }
+  },
+
+  autoRespond: async () => {
+    const { session, transcript, toolCalls } = get();
+    if (!session) return;
+
+    set({ sending: true, error: null });
+
+    try {
+      const response = await autoRespondApi(session.id);
+
+      const turn = Math.floor((transcript.length + 1) / 2) + 1;
+      const newToolCalls: TrackedToolCall[] = response.tool_calls.map((tc) => ({
+        ...tc,
+        turn,
+      }));
+
+      const patientMsg: ChatMessage = {
+        role: "user",
+        content: response.patient_message,
+      };
+      const agentMsg: ChatMessage = {
+        role: "assistant",
+        content: response.agent_message,
+      };
+
+      set({
+        transcript: [...get().transcript, patientMsg, agentMsg],
+        toolCalls: [...toolCalls, ...newToolCalls],
+        escalation: response.escalation ?? get().escalation,
+        sending: false,
+      });
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Auto-respond failed";
       set({ error: message, sending: false });
     }
   },

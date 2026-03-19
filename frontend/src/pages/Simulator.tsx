@@ -9,23 +9,15 @@ import { Badge } from "@/components/ui/badge";
 import { useSimulationStore } from "@/stores/simulationStore";
 import { usePracticeStore } from "@/stores/practiceStore";
 import { useAgentConfigStore } from "@/stores/agentConfigStore";
+import { type ScenarioSummary, listScenarios } from "@/api/scenarios";
 import {
   Loader2,
   Plus,
   RotateCcw,
   MessageSquare,
   Smartphone,
+  Bot,
 } from "lucide-react";
-
-const SCENARIOS = [
-  { value: "", label: "Free conversation" },
-  { value: "reschedule_appointment", label: "Reschedule Appointment" },
-  { value: "book_annual_physical", label: "Book Annual Physical" },
-  { value: "ask_clinic_hours", label: "Ask Clinic Hours" },
-  { value: "check_insurance", label: "Check Insurance" },
-  { value: "billing_question", label: "Billing Question" },
-  { value: "urgent_symptom", label: "Urgent Symptom" },
-];
 
 export default function Simulator() {
   const {
@@ -39,6 +31,7 @@ export default function Simulator() {
     error,
     createSession,
     send,
+    autoRespond,
     setChannelMode,
     clearSession,
   } = useSimulationStore();
@@ -49,10 +42,16 @@ export default function Simulator() {
   const fetchConfig = useAgentConfigStore((s) => s.fetchCurrent);
 
   const [selectedScenario, setSelectedScenario] = useState("");
+  const [scenarios, setScenarios] = useState<ScenarioSummary[]>([]);
 
   useEffect(() => {
     if (!practice) fetchPractice();
     if (!config) fetchConfig();
+    listScenarios()
+      .then(setScenarios)
+      .catch(() => {
+        /* fallback: empty list, free conversation only */
+      });
   }, [practice, config, fetchPractice, fetchConfig]);
 
   async function handleNewSession() {
@@ -92,8 +91,9 @@ export default function Simulator() {
               disabled={!!session}
               className="h-8 rounded-md border border-input bg-background px-2 text-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:opacity-50"
             >
-              {SCENARIOS.map((s) => (
-                <option key={s.value} value={s.value}>
+              <option value="">Free conversation</option>
+              {scenarios.map((s) => (
+                <option key={s.name} value={s.name}>
                   {s.label}
                 </option>
               ))}
@@ -126,10 +126,27 @@ export default function Simulator() {
             </div>
 
             {session ? (
-              <Button size="sm" variant="outline" onClick={handleRerun}>
-                <RotateCcw className="mr-1 h-4 w-4" />
-                Rerun
-              </Button>
+              <>
+                {session.scenario_name && (
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={autoRespond}
+                    disabled={sending}
+                  >
+                    {sending ? (
+                      <Loader2 className="mr-1 h-4 w-4 animate-spin" />
+                    ) : (
+                      <Bot className="mr-1 h-4 w-4" />
+                    )}
+                    Auto-respond
+                  </Button>
+                )}
+                <Button size="sm" variant="outline" onClick={handleRerun}>
+                  <RotateCcw className="mr-1 h-4 w-4" />
+                  Rerun
+                </Button>
+              </>
             ) : (
               <Button
                 size="sm"
@@ -169,7 +186,8 @@ export default function Simulator() {
           {selectedScenario && (
             <Badge variant="secondary" className="mt-2">
               Scenario:{" "}
-              {SCENARIOS.find((s) => s.value === selectedScenario)?.label}
+              {scenarios.find((s) => s.name === selectedScenario)?.label ??
+                selectedScenario}
             </Badge>
           )}
         </div>

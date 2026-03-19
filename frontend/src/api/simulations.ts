@@ -50,6 +50,14 @@ export interface ChatMessage {
   content: string | Record<string, unknown>[];
 }
 
+export interface AutoRespondResponse {
+  patient_message: string;
+  agent_message: string;
+  tool_calls: ToolCallOut[];
+  escalation: EscalationOut | null;
+  stop_reason: string;
+}
+
 export interface SimulationCreate {
   practice_id: string;
   config_id: string;
@@ -105,6 +113,15 @@ export async function sendMessage(
   const res = await client.post<MessageResponse>(
     `/simulations/${simulationId}/messages`,
     data,
+  );
+  return res.data;
+}
+
+export async function autoRespond(
+  simulationId: string,
+): Promise<AutoRespondResponse> {
+  const res = await client.post<AutoRespondResponse>(
+    `/simulations/${simulationId}/auto_responses`,
   );
   return res.data;
 }

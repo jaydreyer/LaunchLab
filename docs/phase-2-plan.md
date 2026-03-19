@@ -1,6 +1,6 @@
 # Phase 2: Simulation Core — Execution Plan
 
-**Status:** In progress (Phase 2D complete)
+**Status:** In progress (Phase 2E complete)
 **Last Updated:** 2026-03-18
 
 ---
@@ -184,36 +184,35 @@ Tool calls endpoint returns data. Trace panel in the Simulator shows tool calls 
 
 ## Phase 2E — Patient Simulator (LLM-Powered Auto-Respond)
 
-**Status:** Not started
+**Status:** Complete
 
 ### Tasks
-- [ ] Create scenario definitions in `backend/scenarios/`:
-  - [ ] `definitions.py` — scenario registry with name, description, patient persona prompt, expected outcome, tool overrides
-  - [ ] Define initial scenarios:
-    - [ ] Reschedule existing appointment (happy path)
-    - [ ] Book annual physical (happy path)
-    - [ ] Missing information during reschedule
-    - [ ] No slots available
-    - [ ] Tool failure during slot lookup
-    - [ ] Ask clinic hours
-    - [ ] Billing question
-    - [ ] Urgent symptom escalation
-- [ ] Create `backend/services/patient_simulator.py`:
-  - [ ] Accept scenario persona prompt + conversation history
-  - [ ] Call Claude with a separate system prompt (patient persona)
-  - [ ] Return a realistic patient message
-  - [ ] This is a distinct LLM subsystem — must use its own system prompt, never mixed with the Healthcare Agent call
-- [ ] Create `backend/routers/scenarios.py`:
-  - [ ] `GET /api/scenarios` — list all scenario definitions
-  - [ ] `GET /api/scenarios/{scenario_name}` — get scenario details
-- [ ] Add auto-respond endpoint:
-  - [ ] `POST /api/simulations/{simulation_id}/auto_responses` — patient simulator generates next message, then sends it through the orchestrator
-- [ ] Register new router in `main.py`
-- [ ] Update frontend Simulator page:
-  - [ ] Populate scenario picker dropdown from `GET /api/scenarios`
-  - [ ] Add "Auto-respond" button that calls the auto-respond endpoint
-  - [ ] Show patient simulator messages with a distinct visual style (auto-generated vs. manual)
-  - [ ] When scenario is selected on new session, pass `scenario_name` to session creation
+- [x] Create scenario definitions in `backend/scenarios/`:
+  - [x] `definitions.py` — scenario registry with name, description, patient persona prompt, expected outcome, tool overrides
+  - [x] Define initial scenarios:
+    - [x] Reschedule existing appointment (happy path)
+    - [x] Book annual physical (happy path)
+    - [x] Missing information during reschedule
+    - [x] No slots available
+    - [x] Tool failure during slot lookup
+    - [x] Ask clinic hours
+    - [x] Billing question
+    - [x] Urgent symptom escalation
+- [x] Create `backend/services/patient_simulator.py`:
+  - [x] Accept scenario persona prompt + conversation history
+  - [x] Call Claude with a separate system prompt (patient persona)
+  - [x] Return a realistic patient message
+  - [x] This is a distinct LLM subsystem — must use its own system prompt, never mixed with the Healthcare Agent call
+- [x] Create `backend/routers/scenarios.py`:
+  - [x] `GET /api/scenarios` — list all scenario definitions
+  - [x] `GET /api/scenarios/{scenario_name}` — get scenario details
+- [x] Add auto-respond endpoint:
+  - [x] `POST /api/simulations/{simulation_id}/auto_responses` — patient simulator generates next message, then sends it through the orchestrator
+- [x] Register new router in `main.py`
+- [x] Update frontend Simulator page:
+  - [x] Populate scenario picker dropdown from `GET /api/scenarios`
+  - [x] Add "Auto-respond" button that calls the auto-respond endpoint
+  - [x] When scenario is selected on new session, pass `scenario_name` to session creation
 - [ ] Verify: select a scenario, click Auto-respond repeatedly, watch a full conversation play out automatically with tool calls and realistic patient behavior
 
 ### Done When
