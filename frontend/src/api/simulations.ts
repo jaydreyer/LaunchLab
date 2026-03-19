@@ -45,7 +45,9 @@ export interface SimulationSummary {
 
 export interface ChatMessage {
   role: "user" | "assistant";
-  content: string;
+  // Content is usually a string, but can be an array of Claude API content
+  // blocks (tool_use, tool_result, text) when raw orchestrator messages are stored.
+  content: string | Record<string, unknown>[];
 }
 
 export interface SimulationCreate {
@@ -57,6 +59,17 @@ export interface SimulationCreate {
 
 export interface MessageSend {
   content: string;
+}
+
+export interface ToolCallRecord {
+  id: string;
+  session_id: string;
+  tool_name: string;
+  tool_input: Record<string, unknown>;
+  tool_output: Record<string, unknown>;
+  status: string;
+  duration_ms: number | null;
+  created_at: string;
 }
 
 export async function listSimulations(): Promise<SimulationSummary[]> {
@@ -73,6 +86,15 @@ export async function createSimulation(
 
 export async function getSimulation(id: string): Promise<SimulationSession> {
   const res = await client.get<SimulationSession>(`/simulations/${id}`);
+  return res.data;
+}
+
+export async function getToolCalls(
+  simulationId: string,
+): Promise<ToolCallRecord[]> {
+  const res = await client.get<ToolCallRecord[]>(
+    `/simulations/${simulationId}/tool_calls`,
+  );
   return res.data;
 }
 

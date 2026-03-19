@@ -7,6 +7,7 @@ from typing import Any
 from models.agent_config import AgentConfig
 from models.practice import PracticeProfile
 from models.simulation import SimulationSession
+from models.tool_call import ToolCall
 from schemas.simulation import SimulationCreate
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -35,6 +36,16 @@ async def list_sessions(db: AsyncSession) -> list[SimulationSession]:
     """List all simulation sessions (newest first)."""
     result = await db.execute(
         select(SimulationSession).order_by(SimulationSession.started_at.desc())
+    )
+    return list(result.scalars().all())
+
+
+async def get_tool_calls(db: AsyncSession, session_id: str) -> list[ToolCall]:
+    """Fetch all tool calls for a simulation session (oldest first)."""
+    result = await db.execute(
+        select(ToolCall)
+        .where(ToolCall.session_id == session_id)
+        .order_by(ToolCall.created_at.asc())
     )
     return list(result.scalars().all())
 

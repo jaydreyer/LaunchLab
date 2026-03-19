@@ -9,6 +9,7 @@ from schemas.simulation import (
     SimulationResponse,
     SimulationSummary,
 )
+from schemas.tool_call import ToolCallResponse
 from services import simulation_service
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -42,6 +43,21 @@ async def get_simulation(
     if not session:
         raise HTTPException(status_code=404, detail="Simulation not found")
     return SimulationResponse.model_validate(session)
+
+
+@router.get(
+    "/{simulation_id}/tool_calls",
+    response_model=list[ToolCallResponse],
+)
+async def get_tool_calls(
+    simulation_id: str, db: AsyncSession = Depends(get_db)
+) -> list[ToolCallResponse]:
+    """Fetch all tool calls for a simulation session."""
+    session = await simulation_service.get_session(db, simulation_id)
+    if not session:
+        raise HTTPException(status_code=404, detail="Simulation not found")
+    calls = await simulation_service.get_tool_calls(db, simulation_id)
+    return [ToolCallResponse.model_validate(c) for c in calls]
 
 
 @router.post(
