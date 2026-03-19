@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   AlertTriangle,
   ChevronDown,
@@ -8,11 +10,13 @@ import {
   Wrench,
   Hash,
   Info,
+  ExternalLink,
 } from "lucide-react";
 import type { EscalationOut } from "@/api/simulations";
 import type { TrackedToolCall } from "@/stores/simulationStore";
 
 interface TracePanelProps {
+  sessionId?: string;
   scenarioName: string | null;
   toolCalls: TrackedToolCall[];
   escalation: EscalationOut | null;
@@ -20,11 +24,14 @@ interface TracePanelProps {
 }
 
 export function TracePanel({
+  sessionId,
   scenarioName,
   toolCalls,
   escalation,
   turnCount,
 }: TracePanelProps) {
+  const navigate = useNavigate();
+
   return (
     <div className="space-y-4">
       {/* Scenario Info */}
@@ -49,6 +56,17 @@ export function TracePanel({
               {turnCount}
             </Badge>
           </div>
+          {sessionId && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="mt-2 w-full"
+              onClick={() => navigate(`/simulator/${sessionId}/trace`)}
+            >
+              <ExternalLink className="mr-1 h-3 w-3" />
+              View Full Trace
+            </Button>
+          )}
         </CardContent>
       </Card>
 
@@ -129,12 +147,19 @@ function ToolCallCard({ toolCall }: { toolCall: TrackedToolCall }) {
         <span className="font-mono text-xs font-medium">
           {toolCall.tool_name}
         </span>
-        <Badge
-          variant={isError ? "destructive" : "secondary"}
-          className="ml-auto text-[10px]"
-        >
-          {toolCall.status}
-        </Badge>
+        <span className="ml-auto flex items-center gap-2">
+          {toolCall.duration_ms != null && (
+            <span className="text-[10px] text-muted-foreground">
+              {toolCall.duration_ms}ms
+            </span>
+          )}
+          <Badge
+            variant={isError ? "destructive" : "default"}
+            className={`text-[10px] ${!isError ? "bg-green-600 hover:bg-green-700" : ""}`}
+          >
+            {toolCall.status}
+          </Badge>
+        </span>
       </button>
       {expanded && (
         <div className="space-y-2 border-t border-border px-3 py-2">

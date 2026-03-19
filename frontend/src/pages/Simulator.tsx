@@ -196,6 +196,7 @@ export default function Simulator() {
           {/* Right pane — Trace */}
           <div className="lg:col-span-2 lg:max-h-[calc(100vh-220px)] lg:overflow-y-auto">
             <TracePanel
+              sessionId={session.id}
               scenarioName={session.scenario_name}
               toolCalls={toolCalls}
               escalation={escalation}

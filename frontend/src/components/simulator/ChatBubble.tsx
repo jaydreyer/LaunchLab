@@ -9,6 +9,10 @@ interface ChatBubbleProps {
 export function ChatBubble({ message, variant }: ChatBubbleProps) {
   const isUser = message.role === "user";
   const isSms = variant === "sms";
+  const text = extractText(message.content);
+
+  // Skip non-displayable messages (tool_use / tool_result blocks)
+  if (!text) return null;
 
   return (
     <div className={`flex gap-2 ${isUser ? "flex-row-reverse" : "flex-row"}`}>
@@ -30,8 +34,21 @@ export function ChatBubble({ message, variant }: ChatBubbleProps) {
             : "bg-muted text-foreground"
         }`}
       >
-        <p className="whitespace-pre-wrap">{message.content}</p>
+        <span className="whitespace-pre-wrap">{text}</span>
       </div>
     </div>
   );
+}
+
+function extractText(
+  content: string | Record<string, unknown>[],
+): string | null {
+  if (typeof content === "string") return content;
+  if (Array.isArray(content)) {
+    const parts = content
+      .filter((b) => b.type === "text" && typeof b.text === "string")
+      .map((b) => b.text as string);
+    return parts.length > 0 ? parts.join("\n") : null;
+  }
+  return null;
 }

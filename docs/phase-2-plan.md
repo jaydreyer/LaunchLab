@@ -1,6 +1,6 @@
 # Phase 2: Simulation Core — Execution Plan
 
-**Status:** In progress (Phase 2C complete)
+**Status:** In progress (Phase 2D complete)
 **Last Updated:** 2026-03-18
 
 ---
@@ -143,29 +143,29 @@ Can start a new simulation session, have a multi-turn conversation with the agen
 
 ## Phase 2D — Trace Panel + Simulation Trace Detail Page
 
-**Status:** Not started
+**Status:** Complete
 
 ### Tasks
-- [ ] Add backend endpoint for tool calls:
-  - [ ] `GET /api/simulations/{simulation_id}/tool_calls` — returns tool calls for a session
-  - [ ] Create `backend/schemas/tool_call.py` if needed for response schema
-- [ ] Add backend endpoint for listing sessions:
-  - [ ] `GET /api/simulations` — returns session summaries (latest first)
-- [ ] Enhance trace panel in Simulator (right pane):
-  - [ ] Tool call cards are expandable — show full input/output JSON
-  - [ ] Color-code tool status (success = green, error = red)
-  - [ ] Show tool call duration if available
-  - [ ] "View Full Trace" link to open Simulation Trace detail page
-- [ ] Build Simulation Trace detail page (`SimulationTrace.tsx`):
-  - [ ] Full-width timeline layout
-  - [ ] Full transcript with inline tool call annotations (tool calls shown between messages)
-  - [ ] Expandable tool call details (input/output JSON)
-  - [ ] Escalation event marker (if triggered)
-  - [ ] Final outcome card
-  - [ ] Session metadata (scenario name, channel mode, timestamps)
-  - [ ] Back link to Simulator
-- [ ] Add route param support: `/simulator/:id/trace`
-- [ ] Verify: run a conversation, click "View Full Trace," see timeline with tool calls inline, see escalation marker
+- [x] Add backend endpoint for tool calls:
+  - [x] `GET /api/simulations/{simulation_id}/tool_calls` — returns tool calls for a session
+  - [x] Create `backend/schemas/tool_call.py` for response schema
+- [x] Add backend endpoint for listing sessions:
+  - [x] `GET /api/simulations` — returns session summaries (latest first) *(already existed from Phase 2C)*
+- [x] Enhance trace panel in Simulator (right pane):
+  - [x] Tool call cards are expandable — show full input/output JSON
+  - [x] Color-code tool status (success = green, error = red)
+  - [x] Show tool call duration if available
+  - [x] "View Full Trace" link to open Simulation Trace detail page
+- [x] Build Simulation Trace detail page (`SimulationTrace.tsx`):
+  - [x] Full-width timeline layout
+  - [x] Full transcript with inline tool call annotations (tool calls shown between messages)
+  - [x] Expandable tool call details (input/output JSON)
+  - [x] Escalation event marker (if triggered)
+  - [x] Final outcome card
+  - [x] Session metadata (scenario name, channel mode, timestamps)
+  - [x] Back link to Simulator
+- [x] Route param support: `/simulator/:id/trace` *(already existed from Phase 1E scaffold)*
+- [x] Verify: build compiles, types check clean
 
 ### Done When
 Tool calls endpoint returns data. Trace panel in the Simulator shows tool calls with expandable detail. Simulation Trace page shows a full timeline view of a completed conversation with inline annotations, tool details, and outcome.

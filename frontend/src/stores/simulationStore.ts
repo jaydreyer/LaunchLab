@@ -11,6 +11,7 @@ import {
 
 export interface TrackedToolCall extends ToolCallOut {
   turn: number;
+  duration_ms?: number | null;
 }
 
 interface SimulationState {
