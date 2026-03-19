@@ -47,6 +47,16 @@ class MessageResponse(BaseModel):
     stop_reason: str = ""
 
 
+class AutoRespondResponse(BaseModel):
+    """Response from the auto-respond endpoint (patient simulator + agent)."""
+
+    patient_message: str
+    agent_message: str
+    tool_calls: list[ToolCallOut] = []
+    escalation: EscalationOut | None = None
+    stop_reason: str = ""
+
+
 class SimulationResponse(BaseModel):
     """Response schema for a simulation session."""
 

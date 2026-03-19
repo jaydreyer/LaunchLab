@@ -8,11 +8,13 @@ from models.agent_config import AgentConfig
 from models.practice import PracticeProfile
 from models.simulation import SimulationSession
 from models.tool_call import ToolCall
+from scenarios.definitions import get_scenario
 from schemas.simulation import SimulationCreate
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from services.orchestrator import Orchestrator, OrchestratorResponse
+from services.patient_simulator import PatientSimulator
 
 logger = logging.getLogger(__name__)
 
@@ -106,6 +108,74 @@ async def process_message(
     await db.refresh(session)
 
     return response
+
+
+async def auto_respond(
+    db: AsyncSession,
+    session: SimulationSession,
+) -> tuple[str, OrchestratorResponse]:
+    """Use the patient simulator to generate a message, then process it.
+
+    Returns a tuple of (patient_message, orchestrator_response).
+    """
+    scenario = get_scenario(session.scenario_name) if session.scenario_name else None
+    if not scenario:
+        raise ValueError(
+            f"No scenario found for '{session.scenario_name}'. "
+            "Auto-respond requires a scenario with a patient persona."
+        )
+
+    simulator = PatientSimulator(
+        persona_prompt=scenario.patient_persona,
+        channel_mode=session.channel_mode,
+    )
+
+    messages = list(session.messages)
+
+    # If conversation is empty, generate the patient's opening message.
+    # Otherwise, generate a reply based on the conversation so far.
+    if not messages:
+        patient_message = await simulator.generate_opening()
+    else:
+        patient_message = await simulator.generate_message(messages)
+
+    # Now process the patient message through the orchestrator (same as
+    # a manual user message) with scenario tool overrides.
+    practice = await _load_practice(db, session.practice_id)
+    practice_config = _practice_to_dict(practice)
+
+    agent_config = await _load_agent_config(db, session.config_id)
+    agent_config_dict = _agent_config_to_dict(agent_config)
+
+    orchestrator = Orchestrator(
+        practice_config=practice_config,
+        agent_config=agent_config_dict,
+    )
+
+    messages_copy = list(session.messages)
+    response, updated_messages = await orchestrator.process_message(
+        db=db,
+        session_id=session.id,
+        messages=messages_copy,
+        user_message=patient_message,
+        scenario_overrides=scenario.tool_overrides or None,
+    )
+
+    # Handle escalation
+    if response.escalation:
+        session.outcome = json.dumps(
+            {
+                "status": "escalated",
+                "escalation": response.escalation,
+            }
+        )
+
+    # Persist
+    session.messages = updated_messages
+    await db.commit()
+    await db.refresh(session)
+
+    return patient_message, response
 
 
 async def _load_practice(db: AsyncSession, practice_id: str) -> PracticeProfile:

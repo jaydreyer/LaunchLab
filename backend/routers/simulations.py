@@ -3,6 +3,7 @@
 from database import get_db
 from fastapi import APIRouter, Depends, HTTPException
 from schemas.simulation import (
+    AutoRespondResponse,
     MessageResponse,
     MessageSend,
     SimulationCreate,
@@ -77,6 +78,36 @@ async def send_message(
     response = await simulation_service.process_message(db, session, data.content)
 
     return MessageResponse(
+        agent_message=response.agent_message,
+        tool_calls=[tc for tc in response.tool_calls],
+        escalation=response.escalation,
+        stop_reason=response.stop_reason,
+    )
+
+
+@router.post(
+    "/{simulation_id}/auto_responses",
+    response_model=AutoRespondResponse,
+)
+async def auto_respond(
+    simulation_id: str,
+    db: AsyncSession = Depends(get_db),
+) -> AutoRespondResponse:
+    """Patient simulator generates a message, then the agent responds."""
+    session = await simulation_service.get_session(db, simulation_id)
+    if not session:
+        raise HTTPException(status_code=404, detail="Simulation not found")
+
+    if not session.scenario_name:
+        raise HTTPException(
+            status_code=400,
+            detail="Auto-respond requires a session with a scenario.",
+        )
+
+    patient_message, response = await simulation_service.auto_respond(db, session)
+
+    return AutoRespondResponse(
+        patient_message=patient_message,
         agent_message=response.agent_message,
         tool_calls=[tc for tc in response.tool_calls],
         escalation=response.escalation,
