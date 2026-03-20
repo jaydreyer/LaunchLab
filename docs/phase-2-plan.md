@@ -1,6 +1,6 @@
 # Phase 2: Simulation Core — Execution Plan
 
-**Status:** In progress (Phase 2E complete)
+**Status:** Complete (all sub-phases done)
 **Last Updated:** 2026-03-18
 
 ---
@@ -233,27 +233,27 @@ Scenario definitions exist in the backend and are served via API. Patient simula
 
 ## Phase 2F — Scenarios + Secondary Intents (Workflow Routing, Billing, Escalation)
 
-**Status:** Not started
+**Status:** Complete
 
 ### Tasks
-- [ ] Verify and tune primary workflow (rescheduling):
-  - [ ] Run reschedule happy path end-to-end — confirm intent detection, info collection, tool use, confirmation
-  - [ ] Run "missing info" scenario — confirm agent asks before acting
-  - [ ] Run "no slots available" scenario — confirm graceful handling
-  - [ ] Run "tool failure" scenario — confirm agent doesn't fabricate data
-  - [ ] Tune system prompt and workflow steps if any scenario behaves poorly
-- [ ] Verify and tune secondary intents:
-  - [ ] Clinic hours / location intent — agent calls `get_clinic_hours` and responds clearly
-  - [ ] Billing question — agent routes via `route_billing_question`, does not answer specifics
-  - [ ] Insurance question — agent calls `check_insurance_acceptance`, handles uncertain result
-  - [ ] Urgent symptom escalation — agent stops scheduling flow, escalates immediately
-  - [ ] Unsupported request — agent declines cleanly, offers supported alternatives
-- [ ] Update scenario definitions if needed (add/adjust persona prompts, tool overrides)
-- [ ] Add scenario metadata for eval readiness:
-  - [ ] `expected_outcome` field on each scenario
-  - [ ] `category` field (scheduling, escalation, info, routing, unsupported)
-  - [ ] `evaluation_criteria` stubs (will be fully implemented in Phase 3)
-- [ ] Verify: each of the 8–10 built-in scenarios runs to a reasonable completion via auto-respond, with correct tool usage, escalation behavior, and routing
+- [x] Verify and tune primary workflow (rescheduling):
+  - [x] Run reschedule happy path end-to-end — confirm intent detection, info collection, tool use, confirmation
+  - [x] Run "missing info" scenario — confirm agent asks before acting
+  - [x] Run "no slots available" scenario — confirm graceful handling
+  - [x] Run "tool failure" scenario — confirm agent doesn't fabricate data
+  - [x] Tune system prompt and workflow steps if any scenario behaves poorly
+- [x] Verify and tune secondary intents:
+  - [x] Clinic hours / location intent — agent calls `get_clinic_hours` and responds clearly
+  - [x] Billing question — agent routes via `route_billing_question`, does not answer specifics
+  - [x] Insurance question — agent calls `check_insurance_acceptance`, handles uncertain result
+  - [x] Urgent symptom escalation — agent stops scheduling flow, escalates immediately
+  - [x] Unsupported request — agent declines cleanly, offers supported alternatives
+- [x] Update scenario definitions if needed (add/adjust persona prompts, tool overrides)
+- [x] Add scenario metadata for eval readiness:
+  - [x] `expected_outcome` field on each scenario
+  - [x] `category` field (scheduling, escalation, info, routing, unsupported)
+  - [x] `evaluation_criteria` stubs (will be fully implemented in Phase 3)
+- [x] Verify: all 10 built-in scenarios run to reasonable completion via auto-respond, with correct tool usage, escalation behavior, and routing
 
 ### Done When
 All built-in scenarios produce reasonable agent behavior. Rescheduling works end-to-end. Billing routes correctly. Urgent symptoms escalate. Clinic hours queries return data. Each scenario has metadata ready for Phase 3 eval integration.

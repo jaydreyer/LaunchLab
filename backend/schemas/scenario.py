@@ -26,3 +26,4 @@ class ScenarioSummary(BaseModel):
     description: str
     category: str
     expected_outcome: str
+    evaluation_criteria: list[str] = []

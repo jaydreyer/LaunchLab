@@ -44,6 +44,7 @@ class LookupAppointmentSlots(BaseTool):
         appointment_type: str,
         preferred_date_range: str | None = None,
         force_failure: bool = False,
+        force_empty: bool = False,
         **kwargs: Any,
     ) -> ToolResult:
         if force_failure:
@@ -64,6 +65,26 @@ class LookupAppointmentSlots(BaseTool):
         if appointment_type not in prov["appointment_types"]:
             return self._fail(f"{prov['name']} does not offer '{appointment_type}'.")
 
+        appt = BRIGHTCARE_DATA["appointment_types"].get(appointment_type, {})
+        loc_name = BRIGHTCARE_DATA["locations"][location]["name"]
+
+        if force_empty:
+            return ToolResult(
+                status="success",
+                output={
+                    "provider": prov["name"],
+                    "location": loc_name,
+                    "appointment_type": appointment_type,
+                    "duration_min": appt.get("duration_min"),
+                    "slots": [],
+                    "slot_count": 0,
+                    "message": (
+                        "No available slots found for the requested "
+                        "provider and location in the next 2 weeks."
+                    ),
+                },
+            )
+
         # Build concrete slots from the next 5 weekdays
         upcoming = _next_weekday_dates(count=5)
         slots: list[dict[str, str]] = []
@@ -78,9 +99,6 @@ class LookupAppointmentSlots(BaseTool):
                         "slot_id": f"slot_{uuid.uuid4().hex[:8]}",
                     }
                 )
-
-        appt = BRIGHTCARE_DATA["appointment_types"].get(appointment_type, {})
-        loc_name = BRIGHTCARE_DATA["locations"][location]["name"]
 
         return ToolResult(
             status="success",

@@ -17,6 +17,7 @@ async def list_all_scenarios() -> list[ScenarioSummary]:
             description=s.description,
             category=s.category,
             expected_outcome=s.expected_outcome,
+            evaluation_criteria=list(s.evaluation_criteria),
         )
         for s in list_scenarios()
     ]
