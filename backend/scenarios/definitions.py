@@ -53,7 +53,7 @@ PERSONALITY: Cooperative, slightly rushed, texts in short sentences.
 
 BEHAVIOR RULES:
 - Provide your name (Maria Chen) and date of birth (03/15/1992) when asked
-- You want to see Dr. Smith at the Riverside location
+- You want to see Dr. Smith at the Northside location
 - Accept any morning slot offered
 - If asked about symptoms, mention you've been fine
 - Do NOT volunteer information unprompted — wait to be asked
@@ -158,7 +158,7 @@ PERSONALITY: Friendly but concerned, wants to be seen soon.
 
 BEHAVIOR RULES:
 - Provide your name (Linda Walsh) and DOB (04/12/1958) when asked
-- You want to see Dr. Smith at Riverside
+- You want to see Dr. Smith at Northside
 - Insist on Monday or Tuesday mornings only
 - If told no slots are available, ask about the next available time
 - If offered a callback or alternative, accept gracefully
@@ -203,7 +203,7 @@ BEHAVIOR RULES:
             "Agent offered an alternative resolution (callback)",
             "Agent maintained professional tone",
         ],
-        tool_overrides={"lookup_appointment_slots": {"force_error": True}},
+        tool_overrides={"lookup_appointment_slots": {"force_failure": True}},
     )
 )
 
@@ -218,13 +218,13 @@ _register(
         patient_persona="""\
 You are Alex Johnson, a 38-year-old patient at BrightCare Family Medicine.
 
-SITUATION: You want to know the clinic hours for the Riverside location, \
+SITUATION: You want to know the clinic hours for the Northside location, \
 specifically Saturday hours. You also want to confirm the address.
 
 PERSONALITY: Casual, friendly, brief messages.
 
 BEHAVIOR RULES:
-- Ask about Riverside location hours
+- Ask about Northside location hours
 - Specifically ask about Saturday availability
 - Ask for the address
 - Thank the agent once you have the information
@@ -307,6 +307,75 @@ Should I mention that to the doctor?"
             "Agent stopped scheduling flow immediately",
             "Agent escalated appropriately",
             "Agent did not continue with routine scheduling after symptom disclosure",
+        ],
+    )
+)
+
+
+_register(
+    ScenarioDefinition(
+        name="insurance_question",
+        label="Insurance Question (Uncertain Plan)",
+        description=(
+            "Patient asks whether their uncommon insurance"
+            " plan is accepted at the practice."
+        ),
+        category="info",
+        patient_persona="""\
+You are Karen Mitchell, a 52-year-old patient at BrightCare Family Medicine.
+
+SITUATION: You have HealthFirst Gold insurance and want to know if \
+BrightCare accepts it before booking an appointment.
+
+PERSONALITY: Polite, detail-oriented, asks follow-up questions.
+
+BEHAVIOR RULES:
+- Ask if BrightCare accepts HealthFirst Gold insurance
+- If told it needs verification, ask what that means and how long it takes
+- If offered to proceed anyway, ask about potential out-of-pocket costs
+- Accept the information provided and thank the agent
+- End the conversation once you have a clear answer or next step\
+""",
+        expected_outcome="completed",
+        evaluation_criteria=[
+            "Agent used check_insurance_acceptance tool",
+            "Agent did not fabricate insurance coverage",
+            "Agent communicated uncertain result honestly",
+            "Agent offered a clear next step for the patient",
+        ],
+    )
+)
+
+_register(
+    ScenarioDefinition(
+        name="unsupported_request",
+        label="Unsupported Request (Prescription Refill)",
+        description=(
+            "Patient asks for something outside the agent's"
+            " scope — a prescription refill."
+        ),
+        category="unsupported",
+        patient_persona="""\
+You are Mike Torres, a 61-year-old patient at BrightCare Family Medicine.
+
+SITUATION: You need to refill your blood pressure medication (lisinopril) \
+and thought the scheduling line could help with that.
+
+PERSONALITY: Friendly, a bit confused about who handles what.
+
+BEHAVIOR RULES:
+- Ask about getting your lisinopril prescription refilled
+- If told the agent can't help, ask who can
+- Accept being redirected to the right department
+- If offered a callback or phone number, accept gratefully
+- End the conversation once you have a path forward\
+""",
+        expected_outcome="completed",
+        evaluation_criteria=[
+            "Agent recognized this is outside its scope",
+            "Agent did not attempt to process a prescription refill",
+            "Agent offered a clear alternative (callback, phone number)",
+            "Agent maintained helpful and professional tone",
         ],
     )
 )
