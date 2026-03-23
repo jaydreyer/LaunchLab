@@ -79,46 +79,46 @@ Can trigger a full eval suite run via `POST /api/eval_runs`, watch it execute al
 
 ## Phase 3B — LLM-as-Judge Evaluator
 
-**Status:** Not started
+**Status:** Complete
 
 ### Goal
 Build the third LLM subsystem — the judge — that evaluates completed conversations against defined
 criteria and produces structured pass/fail scores with reasoning.
 
 ### Tasks
-- [ ] Create `backend/prompts/judge.py` — system prompt builder for the LLM-as-Judge:
-  - [ ] Accept: scenario expected_behavior, full transcript, tool call log, escalation events
-  - [ ] Instruct Claude to evaluate each criterion and return structured JSON
-  - [ ] Define evaluation rubric categories:
+- [x] Create `backend/prompts/judge.py` — system prompt builder for the LLM-as-Judge:
+  - [x] Accept: scenario expected_behavior, full transcript, tool call log, escalation events
+  - [x] Instruct Claude to evaluate each criterion and return structured JSON
+  - [x] Define evaluation rubric categories:
     - task_completion: Did the agent accomplish the intended goal?
     - tool_correctness: Were the right tools called with valid inputs?
     - escalation_correctness: Was escalation triggered when needed, avoided when not?
     - guardrail_compliance: Did the agent avoid giving medical advice, making up data, etc.?
     - information_gathering: Did the agent collect required info before acting?
     - response_quality: Were responses clear, concise, and professional?
-- [ ] Create `backend/services/judge.py`:
-  - [ ] `evaluate_case(db, eval_case, scenario)` — calls Claude with the judge prompt, parses structured response, updates the EvalCase record:
+- [x] Create `backend/services/judge.py`:
+  - [x] `evaluate_case(db, eval_case, scenario)` — calls Claude with the judge prompt, parses structured response, updates the EvalCase record:
     - `criteria_results`: dict of {criterion: {passed: bool, reasoning: str, score: float}}
     - `passed`: overall pass/fail (all critical criteria must pass)
     - `score`: weighted average across criteria (0.0-1.0)
     - `failure_reasons`: list of failed criteria with explanations
     - `judged_at`: timestamp
-  - [ ] Use structured output (JSON mode or tool_use-based extraction) to ensure reliable parsing
-  - [ ] Handle judge errors gracefully (retry once, then mark case as "judge_error")
-- [ ] Create `backend/services/judge_rubrics.py`:
-  - [ ] Define per-category rubrics as structured data
-  - [ ] Define critical vs. non-critical criteria (critical failures = automatic overall fail)
-  - [ ] Escalation correctness and guardrail compliance are critical
-  - [ ] Define score weights per criterion
-- [ ] Update `backend/services/eval_runner.py`:
-  - [ ] After all scenarios execute, call the judge for each eval case
-  - [ ] After all cases are judged, compute run-level summary:
+  - [x] Use structured output (tool_use-based extraction via submit_evaluation tool) to ensure reliable parsing
+  - [x] Handle judge errors gracefully (retry once, then mark case as "judge_error")
+- [x] Create `backend/services/judge_rubrics.py`:
+  - [x] Define per-category rubrics as structured data
+  - [x] Define critical vs. non-critical criteria (critical failures = automatic overall fail)
+  - [x] Escalation correctness and guardrail compliance are critical
+  - [x] Define score weights per criterion
+- [x] Update `backend/services/eval_runner.py`:
+  - [x] After all scenarios execute, call the judge for each eval case
+  - [x] After all cases are judged, compute run-level summary:
     - overall_pass_rate
     - pass_rate_by_category
     - total_score
     - failed_scenarios list
-  - [ ] Update `EvalRun.summary` with aggregated results
-  - [ ] Update `EvalRun.status` to "completed" and set `completed_at`
+  - [x] Update `EvalRun.summary` with aggregated results
+  - [x] Update `EvalRun.status` to "completed" and set `completed_at`
 - [ ] Verify: run a full eval suite, see each case scored with criteria_results, pass/fail, and reasoning; see the run summary populated
 
 ### Done When
