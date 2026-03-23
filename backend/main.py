@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from routers.agent_configs import preview_router as agent_config_preview_router
 from routers.agent_configs import reset_router as agent_config_reset_router
 from routers.agent_configs import router as agent_configs_router
+from routers.dashboard import router as dashboard_router
 from routers.evals import router as evals_router
 from routers.practices import reset_router as practice_reset_router
 from routers.practices import router as practices_router
@@ -46,6 +47,7 @@ app.include_router(practice_reset_router)
 app.include_router(agent_configs_router)
 app.include_router(agent_config_reset_router)
 app.include_router(agent_config_preview_router)
+app.include_router(dashboard_router)
 app.include_router(evals_router)
 app.include_router(scenarios_router)
 app.include_router(simulations_router)
