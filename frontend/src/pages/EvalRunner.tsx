@@ -34,7 +34,10 @@ import {
   Clock,
   AlertTriangle,
   ExternalLink,
+  FlaskConical,
+  Settings,
 } from "lucide-react";
+import { EmptyState, LoadingState } from "@/components/ui/empty-state";
 import { Link } from "react-router";
 
 type FilterStatus = "all" | "pass" | "fail";
@@ -187,15 +190,23 @@ export default function EvalRunner() {
       {running && <RunningIndicator />}
 
       {!running && needsSetup && (
-        <EmptyCard message="Set up a practice profile and agent config before running evaluations." />
+        <EmptyState
+          icon={Settings}
+          heading="Setup required"
+          description="Configure a practice profile and agent config before running evaluations."
+        />
       )}
 
       {!running && !needsSetup && loading && (
-        <EmptyCard message="Loading eval runs..." />
+        <LoadingState message="Loading eval runs..." />
       )}
 
       {!running && !needsSetup && !loading && !currentRun && (
-        <EmptyCard message="No eval runs yet. Click Run Evals to start your first evaluation suite." />
+        <EmptyState
+          icon={FlaskConical}
+          heading="No eval runs yet"
+          description="Click Run Evals to start your first evaluation suite and measure agent readiness."
+        />
       )}
 
       {!running && currentRun && (
@@ -530,14 +541,6 @@ function CaseDetails({ evalCase }: { evalCase: EvalCaseResponse }) {
           View full simulation trace
         </Link>
       )}
-    </div>
-  );
-}
-
-function EmptyCard({ message }: { message: string }) {
-  return (
-    <div className="rounded-lg border border-border bg-card p-8 text-center text-muted-foreground">
-      {message}
     </div>
   );
 }

@@ -21,7 +21,9 @@ import {
   XCircle,
   ArrowRight,
   ShieldAlert,
+  LayoutDashboard,
 } from "lucide-react";
+import { EmptyState, LoadingState } from "@/components/ui/empty-state";
 
 const LEVEL_LABELS: Record<string, string> = {
   ready_for_pilot: "Ready for Pilot",
@@ -117,12 +119,7 @@ export default function ReadinessDashboard() {
         }
       />
 
-      {loading && (
-        <div className="rounded-lg border border-border bg-card p-8 text-center text-muted-foreground">
-          <Loader2 className="mx-auto h-6 w-6 animate-spin" />
-          <p className="mt-2">Loading readiness data...</p>
-        </div>
-      )}
+      {loading && <LoadingState message="Loading readiness data..." />}
 
       {error && (
         <div className="rounded-md border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">
@@ -131,18 +128,19 @@ export default function ReadinessDashboard() {
       )}
 
       {!loading && !error && !readiness && (
-        <div className="rounded-lg border border-border bg-card p-8 text-center text-muted-foreground">
-          <p>
-            No eval runs completed yet. Run an evaluation suite first to see
-            readiness results.
-          </p>
-          <Link to="/evals" className="mt-3 inline-block">
-            <Button size="sm" variant="outline">
-              <ArrowRight className="mr-1 h-4 w-4" />
-              Go to Eval Runner
-            </Button>
-          </Link>
-        </div>
+        <EmptyState
+          icon={LayoutDashboard}
+          heading="No eval runs completed yet"
+          description="Run an evaluation suite first to see launch readiness results."
+          action={
+            <Link to="/evals">
+              <Button size="sm" variant="outline">
+                <ArrowRight className="mr-1 h-4 w-4" />
+                Go to Eval Runner
+              </Button>
+            </Link>
+          }
+        />
       )}
 
       {!loading && readiness && (

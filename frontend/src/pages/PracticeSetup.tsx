@@ -12,7 +12,8 @@ import { AppointmentTypesSection } from "@/components/practice/AppointmentTypesS
 import { InsuranceRulesSection } from "@/components/practice/InsuranceRulesSection";
 import { EscalationRulesSection } from "@/components/practice/EscalationRulesSection";
 import { usePracticeStore } from "@/stores/practiceStore";
-import { Loader2, RotateCcw, Save, Sparkles } from "lucide-react";
+import { Building2, Loader2, RotateCcw, Save, Sparkles } from "lucide-react";
+import { EmptyState, LoadingState } from "@/components/ui/empty-state";
 import type { Practice, PracticeUpdate } from "@/api/practices";
 
 export default function PracticeSetup() {
@@ -83,9 +84,7 @@ export default function PracticeSetup() {
           title="Practice Setup"
           description="Configure the healthcare practice profile."
         />
-        <div className="flex items-center justify-center p-12">
-          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-        </div>
+        <LoadingState message="Loading practice configuration..." />
       </div>
     );
   }
@@ -97,17 +96,22 @@ export default function PracticeSetup() {
           title="Practice Setup"
           description="Configure the healthcare practice profile."
         />
-        <div className="rounded-lg border border-border bg-card p-8 text-center">
-          {error && <p className="mb-4 text-sm text-destructive">{error}</p>}
-          <p className="mb-4 text-muted-foreground">
-            No practice configured yet. Load the BrightCare sample to get
-            started.
-          </p>
-          <Button onClick={handleLoadSample} size="lg">
-            <Sparkles className="mr-2 h-4 w-4" />
-            Load BrightCare Sample
-          </Button>
-        </div>
+        {error && (
+          <div className="mb-4 rounded-md border border-destructive/50 bg-destructive/10 p-3 text-sm text-destructive">
+            {error}
+          </div>
+        )}
+        <EmptyState
+          icon={Building2}
+          heading="No practice configured yet"
+          description="Load the BrightCare Family Medicine sample to get started with a realistic practice profile."
+          action={
+            <Button onClick={handleLoadSample} size="lg">
+              <Sparkles className="mr-2 h-4 w-4" />
+              Load BrightCare Sample
+            </Button>
+          }
+        />
       </div>
     );
   }

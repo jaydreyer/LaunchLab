@@ -17,7 +17,9 @@ import {
   MessageSquare,
   Smartphone,
   Bot,
+  Settings,
 } from "lucide-react";
+import { EmptyState } from "@/components/ui/empty-state";
 
 export default function Simulator() {
   const {
@@ -172,23 +174,60 @@ export default function Simulator() {
       )}
 
       {needsSetup && !session ? (
-        <div className="rounded-lg border border-border bg-card p-8 text-center text-muted-foreground">
-          <p>
-            Set up a practice profile and agent config before running
-            simulations.
-          </p>
-        </div>
+        <EmptyState
+          icon={Settings}
+          heading="Setup required"
+          description="Configure a practice profile and agent config before running simulations."
+        />
       ) : !session ? (
-        <div className="rounded-lg border border-border bg-card p-8 text-center text-muted-foreground">
-          <p>
-            Click <strong>New Session</strong> to start a conversation.
-          </p>
-          {selectedScenario && (
-            <Badge variant="secondary" className="mt-2">
-              Scenario:{" "}
-              {scenarios.find((s) => s.name === selectedScenario)?.label ??
-                selectedScenario}
-            </Badge>
+        <div className="space-y-6">
+          <EmptyState
+            icon={MessageSquare}
+            heading="Ready to simulate"
+            description="Pick a scenario below to launch a conversation, or use the controls above for a free conversation."
+          />
+
+          {/* Quick-launch scenario cards */}
+          {scenarios.length > 0 && (
+            <div>
+              <h3 className="mb-3 text-sm font-semibold text-muted-foreground">
+                Quick Launch Scenarios
+              </h3>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {scenarios.map((s) => (
+                  <button
+                    key={s.name}
+                    onClick={() => {
+                      setSelectedScenario(s.name);
+                      if (practice && config) {
+                        createSession(practice.id, config.id, s.name);
+                      }
+                    }}
+                    disabled={loading}
+                    className="group rounded-lg border border-border bg-card p-4 text-left transition-colors hover:border-teal-300 hover:bg-teal-50/50"
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <span className="text-sm font-medium text-foreground group-hover:text-teal-700">
+                        {s.label}
+                      </span>
+                      <Badge
+                        variant="outline"
+                        className="shrink-0 text-[10px] capitalize"
+                      >
+                        {s.category}
+                      </Badge>
+                    </div>
+                    <p className="mt-1 text-xs leading-relaxed text-muted-foreground line-clamp-2">
+                      {s.description}
+                    </p>
+                    <p className="mt-2 text-[10px] text-muted-foreground/60">
+                      Expected:{" "}
+                      <span className="capitalize">{s.expected_outcome}</span>
+                    </p>
+                  </button>
+                ))}
+              </div>
+            </div>
           )}
         </div>
       ) : (
