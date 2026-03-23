@@ -1,6 +1,6 @@
 # Phase 3: Evaluation + Readiness — Execution Plan
 
-**Status:** In progress (3A complete)
+**Status:** In progress (3A, 3B, 3C complete)
 **Last Updated:** 2026-03-23
 
 ---
@@ -140,7 +140,7 @@ A complete eval run produces scored cases with per-criterion results, reasoning,
 
 ## Phase 3C — Readiness Scoring + Dashboard Backend
 
-**Status:** Not started
+**Status:** Complete (2026-03-23)
 
 ### Goal
 Build the readiness scoring engine that aggregates eval results into a launch recommendation, and
