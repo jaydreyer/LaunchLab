@@ -10,7 +10,8 @@ import { ToolPolicySection } from "@/components/agent-config/ToolPolicySection";
 import { ToneGuidelinesSection } from "@/components/agent-config/ToneGuidelinesSection";
 import { PromptPreviewPanel } from "@/components/agent-config/PromptPreviewPanel";
 import { useAgentConfigStore } from "@/stores/agentConfigStore";
-import { Loader2, RotateCcw, Save } from "lucide-react";
+import { Bot, Loader2, RotateCcw, Save } from "lucide-react";
+import { EmptyState, LoadingState } from "@/components/ui/empty-state";
 import type { AgentConfig as AgentConfigType } from "@/api/agentConfigs";
 
 export default function AgentConfig() {
@@ -73,9 +74,7 @@ export default function AgentConfig() {
           title="Agent Config"
           description="Customize the healthcare agent's behavior."
         />
-        <div className="flex items-center justify-center p-12">
-          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-        </div>
+        <LoadingState message="Loading agent configuration..." />
       </div>
     );
   }
@@ -87,12 +86,16 @@ export default function AgentConfig() {
           title="Agent Config"
           description="Customize the healthcare agent's behavior."
         />
-        <div className="rounded-lg border border-border bg-card p-8 text-center">
-          {error && <p className="mb-4 text-sm text-destructive">{error}</p>}
-          <p className="text-muted-foreground">
-            No agent config found. Load a practice first in Practice Setup.
-          </p>
-        </div>
+        {error && (
+          <div className="mb-4 rounded-md border border-destructive/50 bg-destructive/10 p-3 text-sm text-destructive">
+            {error}
+          </div>
+        )}
+        <EmptyState
+          icon={Bot}
+          heading="No agent config found"
+          description="Load a practice first in Practice Setup, then the agent config will be generated automatically."
+        />
       </div>
     );
   }

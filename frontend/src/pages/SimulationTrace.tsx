@@ -11,10 +11,11 @@ import {
   ChevronDown,
   ChevronRight,
   Clock,
-  Loader2,
   User,
   Wrench,
+  FileSearch,
 } from "lucide-react";
+import { LoadingState, EmptyState } from "@/components/ui/empty-state";
 import {
   getSimulation,
   getToolCalls,
@@ -56,8 +57,9 @@ export default function SimulationTrace() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-20">
-        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+      <div>
+        <PageHeader title="Simulation Trace" />
+        <LoadingState message="Loading trace data..." />
       </div>
     );
   }
@@ -66,9 +68,17 @@ export default function SimulationTrace() {
     return (
       <div>
         <PageHeader title="Simulation Trace" />
-        <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-6 text-center text-sm text-destructive">
-          {error ?? "Session not found."}
-        </div>
+        {error ? (
+          <div className="rounded-md border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">
+            {error}
+          </div>
+        ) : (
+          <EmptyState
+            icon={FileSearch}
+            heading="Session not found"
+            description="This simulation session may have been deleted or the ID is invalid."
+          />
+        )}
       </div>
     );
   }
@@ -124,36 +134,53 @@ export default function SimulationTrace() {
       </Card>
 
       {/* Timeline */}
-      <div className="space-y-3">
-        {timeline.map((entry, i) => {
-          if (entry.type === "message") {
-            return <TimelineMessage key={i} message={entry.data} />;
-          }
-          return <TimelineToolCall key={i} toolCall={entry.data} />;
-        })}
+      <div className="relative">
+        {/* Vertical connector line */}
+        <div className="absolute left-4 top-0 bottom-0 w-px bg-border" />
+
+        <div className="space-y-4">
+          {timeline.map((entry, i) => {
+            if (entry.type === "message") {
+              return <TimelineMessage key={i} message={entry.data} />;
+            }
+            return <TimelineToolCall key={i} toolCall={entry.data} />;
+          })}
+        </div>
       </div>
 
       {/* Escalation */}
       {outcome?.status === "escalated" && outcome.escalation && (
-        <Card className="mt-6 border-destructive/50">
+        <Card className="mt-6 border-destructive/50 bg-destructive/5">
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2 text-sm text-destructive">
               <AlertTriangle className="h-4 w-4" />
               Escalation Triggered
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-1 text-sm">
-            <div>
-              <span className="text-muted-foreground">Type: </span>
-              {outcome.escalation.type}
-            </div>
-            <div>
-              <span className="text-muted-foreground">Keyword: </span>
-              &ldquo;{outcome.escalation.keyword}&rdquo;
-            </div>
-            <div>
-              <span className="text-muted-foreground">Action: </span>
-              {outcome.escalation.action}
+          <CardContent>
+            <div className="grid grid-cols-3 gap-4 text-sm">
+              <div>
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                  Type
+                </p>
+                <p className="mt-0.5 font-medium">{outcome.escalation.type}</p>
+              </div>
+              <div>
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                  Trigger
+                </p>
+                <p className="mt-0.5 font-medium">
+                  &ldquo;{outcome.escalation.keyword}&rdquo;
+                </p>
+              </div>
+              <div>
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                  Action
+                </p>
+                <p className="mt-0.5 font-medium">
+                  {outcome.escalation.action}
+                </p>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -161,10 +188,10 @@ export default function SimulationTrace() {
 
       {/* Outcome */}
       <Card className="mt-6">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm">Outcome</CardTitle>
-        </CardHeader>
-        <CardContent>
+        <CardContent className="flex items-center gap-3 pt-6">
+          <span className="text-sm font-medium text-muted-foreground">
+            Outcome:
+          </span>
           {outcome ? (
             <Badge
               variant={
@@ -297,28 +324,34 @@ function TimelineMessage({ message }: { message: ChatMessage }) {
   const isUser = message.role === "user";
   const text = extractTextContent(message.content);
 
-  // Skip messages that are purely tool_use or tool_result blocks
   if (!text) return null;
 
   return (
-    <div className={`flex gap-3 ${isUser ? "flex-row-reverse" : "flex-row"}`}>
+    <div className="relative flex gap-3 pl-10">
+      {/* Timeline dot */}
       <div
-        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
+        className={`absolute left-2 top-3 z-10 flex h-5 w-5 items-center justify-center rounded-full ${
           isUser
             ? "bg-primary text-primary-foreground"
             : "bg-muted text-muted-foreground"
         }`}
       >
-        {isUser ? <User className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
+        {isUser ? <User className="h-3 w-3" /> : <Bot className="h-3 w-3" />}
       </div>
-      <div
-        className={`max-w-[75%] rounded-lg px-4 py-3 text-sm leading-relaxed ${
-          isUser
-            ? "bg-primary text-primary-foreground"
-            : "bg-muted text-foreground"
-        }`}
-      >
-        <span className="whitespace-pre-wrap">{text}</span>
+
+      <div className="flex-1">
+        <p className="mb-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+          {isUser ? "Patient" : "Agent"}
+        </p>
+        <div
+          className={`rounded-lg px-4 py-3 text-sm leading-relaxed ${
+            isUser
+              ? "bg-primary/10 text-foreground"
+              : "bg-muted text-foreground"
+          }`}
+        >
+          <span className="whitespace-pre-wrap">{text}</span>
+        </div>
       </div>
     </div>
   );
@@ -329,21 +362,27 @@ function TimelineToolCall({ toolCall }: { toolCall: ToolCallRecord }) {
   const isError = toolCall.status === "error";
 
   return (
-    <div className="mx-10 my-1">
+    <div className="relative pl-10">
+      {/* Timeline dot */}
+      <div className="absolute left-2 top-2 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400">
+        <Wrench className="h-3 w-3" />
+      </div>
+
       <div
         className={`rounded-md border text-sm ${
-          isError ? "border-destructive/30 bg-destructive/5" : "border-border"
+          isError
+            ? "border-destructive/30 bg-destructive/5"
+            : "border-amber-200 bg-amber-50/50 dark:border-amber-800/30 dark:bg-amber-900/10"
         }`}
       >
         <button
           onClick={() => setExpanded(!expanded)}
-          className="flex w-full items-center gap-2 px-3 py-2 text-left hover:bg-accent/50"
+          className="flex w-full items-center gap-2 px-3 py-2 text-left hover:bg-accent/30"
         >
-          <Wrench className="h-3 w-3 shrink-0 text-muted-foreground" />
           {expanded ? (
-            <ChevronDown className="h-3 w-3 shrink-0" />
+            <ChevronDown className="h-3 w-3 shrink-0 text-muted-foreground" />
           ) : (
-            <ChevronRight className="h-3 w-3 shrink-0" />
+            <ChevronRight className="h-3 w-3 shrink-0 text-muted-foreground" />
           )}
           <span className="font-mono text-xs font-medium">
             {toolCall.tool_name}
@@ -364,12 +403,12 @@ function TimelineToolCall({ toolCall }: { toolCall: ToolCallRecord }) {
           </span>
         </button>
         {expanded && (
-          <div className="space-y-2 border-t border-border px-3 py-2">
+          <div className="space-y-2 border-t border-border/50 px-3 py-2">
             <div>
               <p className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
                 Input
               </p>
-              <pre className="overflow-x-auto rounded bg-muted p-2 text-xs">
+              <pre className="overflow-x-auto rounded bg-background p-2 text-xs">
                 {JSON.stringify(toolCall.tool_input, null, 2)}
               </pre>
             </div>
@@ -377,7 +416,7 @@ function TimelineToolCall({ toolCall }: { toolCall: ToolCallRecord }) {
               <p className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
                 Output
               </p>
-              <pre className="overflow-x-auto rounded bg-muted p-2 text-xs">
+              <pre className="overflow-x-auto rounded bg-background p-2 text-xs">
                 {JSON.stringify(toolCall.tool_output, null, 2)}
               </pre>
             </div>
@@ -414,9 +453,7 @@ function formatTimestamp(iso: string): string {
   return new Date(iso).toLocaleString();
 }
 
-function parseOutcome(
-  outcome: string | null,
-): {
+function parseOutcome(outcome: string | null): {
   status: string;
   escalation?: { type: string; keyword: string; action: string };
 } | null {
