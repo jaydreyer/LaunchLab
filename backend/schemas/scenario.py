@@ -14,6 +14,7 @@ class ScenarioResponse(BaseModel):
     category: str
     patient_persona: str
     expected_outcome: str
+    expected_behavior: dict[str, Any] = {}
     evaluation_criteria: list[str] = []
     tool_overrides: dict[str, Any] = {}
 
@@ -26,4 +27,5 @@ class ScenarioSummary(BaseModel):
     description: str
     category: str
     expected_outcome: str
+    expected_behavior: dict[str, Any] = {}
     evaluation_criteria: list[str] = []

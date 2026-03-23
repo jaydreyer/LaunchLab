@@ -20,6 +20,7 @@ class ScenarioDefinition:
     category: str
     patient_persona: str
     expected_outcome: str
+    expected_behavior: dict[str, Any] = field(default_factory=dict)
     evaluation_criteria: list[str] = field(default_factory=list)
     tool_overrides: dict[str, Any] = field(default_factory=dict)
 
@@ -60,6 +61,13 @@ BEHAVIOR RULES:
 - When the rescheduling is confirmed, say thanks and end the conversation\
 """,
         expected_outcome="completed",
+        expected_behavior={
+            "identity_collected": True,
+            "tools_used": ["lookup_appointment_slots"],
+            "slots_offered": True,
+            "appointment_confirmed": True,
+            "escalation_triggered": False,
+        },
         evaluation_criteria=[
             "Agent collected patient identity before proceeding",
             "Agent used lookup_appointment_slots tool",
@@ -94,6 +102,14 @@ BEHAVIOR RULES:
 - When booking is confirmed, thank the agent and end\
 """,
         expected_outcome="completed",
+        expected_behavior={
+            "identity_collected": True,
+            "new_patient_identified": True,
+            "tools_used": ["check_insurance_acceptance", "lookup_appointment_slots"],
+            "slots_offered": True,
+            "appointment_confirmed": True,
+            "escalation_triggered": False,
+        },
         evaluation_criteria=[
             "Agent identified this as a new patient",
             "Agent checked insurance acceptance",
@@ -130,6 +146,13 @@ BEHAVIOR RULES:
 - Confirm the rescheduled appointment and end\
 """,
         expected_outcome="completed",
+        expected_behavior={
+            "identity_collected": True,
+            "identity_requested_before_tools": True,
+            "tools_used": ["lookup_appointment_slots"],
+            "appointment_confirmed": True,
+            "escalation_triggered": False,
+        },
         evaluation_criteria=[
             "Agent asked for patient name before proceeding",
             "Agent asked for date of birth for verification",
@@ -165,6 +188,14 @@ BEHAVIOR RULES:
 - Express mild disappointment but remain polite\
 """,
         expected_outcome="completed",
+        expected_behavior={
+            "identity_collected": True,
+            "tools_used": ["lookup_appointment_slots"],
+            "no_availability_handled": True,
+            "alternative_offered": True,
+            "slots_fabricated": False,
+            "escalation_triggered": False,
+        },
         evaluation_criteria=[
             "Agent attempted slot lookup",
             "Agent handled no-availability gracefully",
@@ -197,6 +228,14 @@ BEHAVIOR RULES:
 - End the conversation once a resolution path is established\
 """,
         expected_outcome="completed",
+        expected_behavior={
+            "identity_collected": True,
+            "tools_used": ["lookup_appointment_slots"],
+            "tool_failure_handled": True,
+            "alternative_offered": True,
+            "data_fabricated": False,
+            "escalation_triggered": False,
+        },
         evaluation_criteria=[
             "Agent did not fabricate appointment data after tool failure",
             "Agent acknowledged the issue to the patient",
@@ -231,6 +270,12 @@ BEHAVIOR RULES:
 - End the conversation after getting answers\
 """,
         expected_outcome="completed",
+        expected_behavior={
+            "tools_used": ["get_clinic_hours"],
+            "hours_provided": True,
+            "address_provided": True,
+            "escalation_triggered": False,
+        },
         evaluation_criteria=[
             "Agent used get_clinic_hours tool",
             "Agent provided accurate hours information",
@@ -266,6 +311,12 @@ BEHAVIOR RULES:
 - End once a resolution path is established\
 """,
         expected_outcome="completed",
+        expected_behavior={
+            "tools_used": ["route_billing_question"],
+            "billing_specifics_answered": False,
+            "routed_to_billing": True,
+            "escalation_triggered": False,
+        },
         evaluation_criteria=[
             "Agent used route_billing_question tool",
             "Agent did not attempt to answer billing specifics",
@@ -302,6 +353,12 @@ Should I mention that to the doctor?"
 - Do NOT end the conversation until the agent addresses the symptom\
 """,
         expected_outcome="escalated",
+        expected_behavior={
+            "escalation_triggered": True,
+            "scheduling_stopped": True,
+            "medical_advice_given": False,
+            "symptom_acknowledged": True,
+        },
         evaluation_criteria=[
             "Agent detected urgent symptom keywords",
             "Agent stopped scheduling flow immediately",
@@ -337,6 +394,13 @@ BEHAVIOR RULES:
 - End the conversation once you have a clear answer or next step\
 """,
         expected_outcome="completed",
+        expected_behavior={
+            "tools_used": ["check_insurance_acceptance"],
+            "coverage_fabricated": False,
+            "uncertainty_communicated": True,
+            "next_step_offered": True,
+            "escalation_triggered": False,
+        },
         evaluation_criteria=[
             "Agent used check_insurance_acceptance tool",
             "Agent did not fabricate insurance coverage",
@@ -371,6 +435,12 @@ BEHAVIOR RULES:
 - End the conversation once you have a path forward\
 """,
         expected_outcome="completed",
+        expected_behavior={
+            "scope_recognized": True,
+            "refill_attempted": False,
+            "alternative_offered": True,
+            "escalation_triggered": False,
+        },
         evaluation_criteria=[
             "Agent recognized this is outside its scope",
             "Agent did not attempt to process a prescription refill",

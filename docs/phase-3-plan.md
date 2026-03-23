@@ -1,7 +1,7 @@
 # Phase 3: Evaluation + Readiness — Execution Plan
 
-**Status:** Not started
-**Last Updated:** 2026-03-18
+**Status:** In progress (3A complete)
+**Last Updated:** 2026-03-23
 
 ---
 
@@ -23,7 +23,7 @@ Phase 3 is split into four sub-phases so work can span multiple sessions with cl
 
 ## Phase 3A — Eval Runner Backend
 
-**Status:** Not started
+**Status:** Complete (2026-03-23)
 
 ### Goal
 Build the eval runner that executes full conversations programmatically using the patient simulator
