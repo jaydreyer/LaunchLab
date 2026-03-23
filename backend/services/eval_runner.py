@@ -1,8 +1,8 @@
 """Eval runner — orchestrates full eval suite runs.
 
 Executes each scenario programmatically using the patient simulator and
-orchestrator, captures actual behaviors, and stores results as EvalRun +
-EvalCase records. Judging (scoring) happens separately in Phase 3B.
+orchestrator, captures actual behaviors, stores results as EvalRun +
+EvalCase records, then calls the LLM-as-Judge to score each case.
 """
 
 import json
@@ -13,10 +13,11 @@ from typing import Any
 from models.eval_case import EvalCase
 from models.eval_run import EvalRun
 from models.simulation import SimulationSession
-from scenarios.definitions import ScenarioDefinition, list_scenarios
+from scenarios.definitions import ScenarioDefinition, get_scenario, list_scenarios
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from services.judge import evaluate_case
 from services.orchestrator import Orchestrator
 from services.patient_simulator import PatientSimulator
 from services.simulation_service import (
@@ -40,8 +41,9 @@ async def run_suite(
     """Orchestrate a full eval suite run.
 
     Creates an EvalRun, executes each scenario end-to-end using the
-    patient simulator + orchestrator, and captures actual behavior for
-    each case. Returns the EvalRun (cases are not yet judged).
+    patient simulator + orchestrator, captures actual behavior, then
+    calls the LLM-as-Judge to score each case. Returns the completed
+    EvalRun with summary.
     """
     # Load practice and agent config once for the whole run
     practice = await _load_practice(db, practice_id)
@@ -101,22 +103,47 @@ async def run_suite(
             await db.refresh(error_case)
             cases.append(error_case)
 
-    # Mark run as awaiting judgment (scoring happens in 3B)
-    eval_run.status = "awaiting_judgment"
+    # --- Judge each case ---
+    eval_run.status = "judging"
+    await db.commit()
+
+    logger.info("Judging %d cases for run %s", len(cases), eval_run.id)
+
+    for case in cases:
+        # Skip error cases — nothing to judge
+        if case.actual_behavior and "error" in case.actual_behavior:
+            case.passed = False
+            case.score = 0.0
+            case.failure_reasons = {"execution": "Scenario execution failed"}
+            case.judged_at = datetime.now(UTC)
+            await db.commit()
+            continue
+
+        scenario = get_scenario(case.scenario_name)
+        if not scenario:
+            logger.warning("No scenario definition for '%s'", case.scenario_name)
+            continue
+
+        try:
+            await evaluate_case(db, case, scenario)
+        except Exception:
+            logger.exception("Judge failed for case '%s'", case.scenario_name)
+            case.passed = False
+            case.score = 0.0
+            case.failure_reasons = {"judge": "Judge raised an exception"}
+            case.judged_at = datetime.now(UTC)
+            await db.commit()
+
+    # --- Compute run-level summary ---
+    summary = _compute_run_summary(cases, scenarios)
+
+    eval_run.status = "completed"
     eval_run.completed_at = datetime.now(UTC)
-    eval_run.summary = {
-        "total_scenarios": len(scenarios),
-        "completed": sum(
-            1 for c in cases if c.actual_behavior and "error" not in c.actual_behavior
-        ),
-        "errored": sum(
-            1 for c in cases if c.actual_behavior and "error" in c.actual_behavior
-        ),
-    }
+    eval_run.summary = summary
     await db.commit()
     await db.refresh(eval_run)
 
-    logger.info("Eval run %s finished: %s", eval_run.id, eval_run.summary)
+    logger.info("Eval run %s completed: %s", eval_run.id, eval_run.summary)
     return eval_run
 
 
@@ -324,3 +351,66 @@ def _is_conversation_complete(text: str) -> bool:
         "all set",
     ]
     return any(signal in lower for signal in farewell_signals)
+
+
+def _compute_run_summary(
+    cases: list[EvalCase],
+    scenarios: list[ScenarioDefinition],
+) -> dict[str, Any]:
+    """Compute aggregated summary for a completed eval run."""
+    total = len(cases)
+    judged = [c for c in cases if c.judged_at is not None]
+    passed = [c for c in judged if c.passed]
+    failed = [c for c in judged if not c.passed]
+
+    # Pass rate by scenario category
+    category_stats: dict[str, dict[str, Any]] = {}
+    scenario_map = {s.name: s for s in scenarios}
+
+    for case in judged:
+        scenario = scenario_map.get(case.scenario_name)
+        cat = scenario.category if scenario else "unknown"
+
+        if cat not in category_stats:
+            category_stats[cat] = {"total": 0, "passed": 0, "total_score": 0.0}
+
+        category_stats[cat]["total"] += 1
+        if case.passed:
+            category_stats[cat]["passed"] += 1
+        category_stats[cat]["total_score"] += case.score or 0.0
+
+    pass_rate_by_category: dict[str, dict[str, Any]] = {}
+    for cat, stats in category_stats.items():
+        count = stats["total"]
+        pass_rate_by_category[cat] = {
+            "total": count,
+            "passed": stats["passed"],
+            "pass_rate": round(stats["passed"] / count, 4) if count else 0.0,
+            "avg_score": round(stats["total_score"] / count, 4) if count else 0.0,
+        }
+
+    # Overall score (average across all judged cases)
+    total_score = sum(c.score or 0.0 for c in judged)
+    overall_score = round(total_score / len(judged), 4) if judged else 0.0
+
+    # Failed scenarios list
+    failed_scenarios = [
+        {
+            "scenario_name": c.scenario_name,
+            "score": c.score,
+            "failure_reasons": c.failure_reasons,
+        }
+        for c in failed
+    ]
+
+    return {
+        "total_scenarios": total,
+        "completed": len(judged),
+        "errored": total - len(judged),
+        "overall_pass_rate": round(len(passed) / len(judged), 4) if judged else 0.0,
+        "overall_score": overall_score,
+        "pass_rate_by_category": pass_rate_by_category,
+        "failed_scenarios": failed_scenarios,
+        "pass_count": len(passed),
+        "fail_count": len(failed),
+    }
