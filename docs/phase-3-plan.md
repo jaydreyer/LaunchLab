@@ -1,6 +1,6 @@
 # Phase 3: Evaluation + Readiness — Execution Plan
 
-**Status:** In progress (3A, 3B, 3C complete)
+**Status:** In progress (3A, 3B, 3C, 3D complete)
 **Last Updated:** 2026-03-23
 
 ---
@@ -216,7 +216,7 @@ Dashboard API returns a complete readiness assessment including overall score, r
 
 ## Phase 3D — Eval Runner + Readiness Dashboard Frontend
 
-**Status:** Not started
+**Status:** Complete (2026-03-23)
 
 ### Goal
 Build the Eval Runner and Launch Readiness Dashboard frontend screens, replacing the existing stubs.
