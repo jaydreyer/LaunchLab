@@ -146,20 +146,12 @@ LaunchLab/
 
 ## Screenshots
 
-<!-- screenshot: practice-setup -->
-
-<!-- screenshot: agent-config -->
-
-<!-- screenshot: simulator -->
-
-<!-- screenshot: simulation-trace -->
-
-<!-- screenshot: eval-runner -->
-
-<!-- screenshot: readiness-dashboard -->
+*Coming soon — screenshots of all six application screens.*
 
 ---
 
 ## License
 
-See [LICENSE](./LICENSE) for details.
+This project is licensed under the [GNU Affero General Public License v3.0](./LICENSE) (AGPL-3.0).
+
+You are free to view, fork, and learn from this code. If you modify and deploy it as a network service, you must release your changes under the same license. See the LICENSE file for full terms.

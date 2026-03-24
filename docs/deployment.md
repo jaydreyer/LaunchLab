@@ -1,17 +1,17 @@
 # LaunchLab Deployment — Tailscale Funnel
 
-Host LaunchLab on your ai-lab server and share it via a public HTTPS URL.
+Host LaunchLab on your own server and share it via a public HTTPS URL using Tailscale Funnel.
 
 ## Prerequisites
 
-- Node 25.x and `uv` (Python 3.12) installed on the ai-lab server
-- Tailscale installed and running on the ai-lab server
+- Node 25.x and `uv` (Python 3.12) installed on the host server
+- Tailscale installed and running on the host server
 - Tailscale Funnel enabled for your tailnet (see Step 2)
 
 ## Step 1: Clone & Configure
 
 ```bash
-# On your ai-lab server
+# On your host server
 git clone <your-repo-url> ~/LaunchLab
 cd ~/LaunchLab/backend
 cp .env.example .env
@@ -22,10 +22,10 @@ Edit `backend/.env`:
 ANTHROPIC_API_KEY=sk-ant-your-real-key
 ENVIRONMENT=production
 LOG_LEVEL=INFO
-CORS_ORIGINS=https://ai-lab.tailnet-name.ts.net
+CORS_ORIGINS=https://your-machine.tailnet-name.ts.net
 ```
 
-Replace `ai-lab.tailnet-name.ts.net` with your actual Tailscale machine name
+Replace `your-machine.tailnet-name.ts.net` with your actual Tailscale machine name
 (run `tailscale status` to find it).
 
 ## Step 2: Enable Tailscale Funnel
@@ -71,14 +71,14 @@ tailscale funnel 8000
 
 This gives you a public URL like:
 ```
-https://ai-lab.tailnet-name.ts.net/
+https://your-machine.tailnet-name.ts.net/
 ```
 
 That URL is accessible from anywhere on the internet — no VPN needed for visitors.
 
 To verify it's working:
 ```bash
-curl https://ai-lab.tailnet-name.ts.net/api/health
+curl https://your-machine.tailnet-name.ts.net/api/health
 ```
 
 ## Step 5: Keep It Running (Optional)
