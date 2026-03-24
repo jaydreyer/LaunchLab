@@ -15,12 +15,12 @@ Before making any changes, read these documents:
 4. `docs/launchlab-implementation-checklist.md` — epics, tickets, and build order
 
 ## Current Work
-**Active:** Phase 1 — Foundation (see `docs/phase-1-plan.md` for sub-phase breakdown and progress)
+**Active:** Phase 1 — Foundation (see `docs/internal/phase-1-plan.md` for sub-phase breakdown and progress)
 
 Check the plan file for which sub-phase is current, what's done, and any handoff notes.
 
 ## Phase Completion Notes
-After each phase, check `docs/phase-notes/` for context on what was built, decisions made, and challenges resolved.
+After each phase, check `docs/internal/phase-notes/` for context on what was built, decisions made, and challenges resolved.
 Use `/phase-complete` to generate the phase note automatically at the end of a phase.
 
 ## Custom Skills

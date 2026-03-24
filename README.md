@@ -146,20 +146,34 @@ LaunchLab/
 
 ## Screenshots
 
-<!-- screenshot: practice-setup -->
+### Practice Setup
+Configure locations, providers, hours, insurance, and escalation rules for the healthcare practice.
+![Practice Setup](docs/screenshots/launchlab-practice.jpg)
 
-<!-- screenshot: agent-config -->
+### Agent Configuration
+Edit the agent's system prompt, guardrails, escalation triggers, tone, and workflow steps.
+![Agent Configuration](docs/screenshots/launchlab-agentconfig.jpg)
 
-<!-- screenshot: simulator -->
+### Live Prompt Preview
+See the fully assembled system prompt built at runtime from practice and agent config.
+![Live Prompt Preview](docs/screenshots/LaunchLab-GeneratedSystemPrompt.jpg)
 
-<!-- screenshot: simulation-trace -->
+### Conversation Simulator
+Run real-time patient conversations with the agent across selectable scenarios.
+![Conversation Simulator](docs/screenshots/LaunchLab-ConversationSimulator.jpg)
 
-<!-- screenshot: eval-runner -->
+### Evaluation Suite
+Run a 10-scenario evaluation with pass/fail scoring and per-criteria breakdowns.
+![Evaluation Suite](docs/screenshots/LaunchLab-Evals.jpg)
 
-<!-- screenshot: readiness-dashboard -->
+### Readiness Dashboard
+View launch readiness scores, category breakdowns, failure themes, and deployment constraints.
+![Readiness Dashboard](docs/screenshots/LaunchLab-Dashboard.jpg)
 
 ---
 
 ## License
 
-See [LICENSE](./LICENSE) for details.
+This project is licensed under the [GNU Affero General Public License v3.0](./LICENSE) (AGPL-3.0).
+
+You are free to view, fork, and learn from this code. If you modify and deploy it as a network service, you must release your changes under the same license. See the LICENSE file for full terms.
