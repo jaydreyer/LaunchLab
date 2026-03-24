@@ -148,7 +148,7 @@ LaunchLab/
 
 ### Practice Setup
 Configure locations, providers, hours, insurance, and escalation rules for the healthcare practice.
-![Practice Setup](docs/screenshots/LaunchLab-Practice2.png)
+![Practice Setup](docs/screenshots/LanuchLab-Practice2.png)
 
 ### Agent Configuration
 Edit the agent's system prompt, guardrails, escalation triggers, tone, and workflow steps.
