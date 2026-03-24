@@ -146,7 +146,29 @@ LaunchLab/
 
 ## Screenshots
 
-*Coming soon — screenshots of all six application screens.*
+### Practice Setup
+Configure locations, providers, hours, insurance, and escalation rules for the healthcare practice.
+![Practice Setup](docs/screenshots/launchlab-practice.jpg)
+
+### Agent Configuration
+Edit the agent's system prompt, guardrails, escalation triggers, tone, and workflow steps.
+![Agent Configuration](docs/screenshots/launchlab-agentconfig.jpg)
+
+### Live Prompt Preview
+See the fully assembled system prompt built at runtime from practice and agent config.
+![Live Prompt Preview](docs/screenshots/LaunchLab-GeneratedSystemPrompt.jpg)
+
+### Conversation Simulator
+Run real-time patient conversations with the agent across selectable scenarios.
+![Conversation Simulator](docs/screenshots/LaunchLab-ConversationSimulator.jpg)
+
+### Evaluation Suite
+Run a 10-scenario evaluation with pass/fail scoring and per-criteria breakdowns.
+![Evaluation Suite](docs/screenshots/LaunchLab-Evals.jpg)
+
+### Readiness Dashboard
+View launch readiness scores, category breakdowns, failure themes, and deployment constraints.
+![Readiness Dashboard](docs/screenshots/LaunchLab-Dashboard.jpg)
 
 ---
 
