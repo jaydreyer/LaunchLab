@@ -2,8 +2,10 @@
 
 from datetime import UTC, datetime
 
+from models.agent_config import AgentConfig
 from models.practice import PracticeProfile
 from schemas.practice import PracticeCreate, PracticeUpdate
+from seed.agent_defaults import DEFAULT_AGENT_CONFIG
 from seed.brightcare import BRIGHTCARE_PRACTICE
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -64,6 +66,16 @@ async def reset_practice_to_defaults(db: AsyncSession) -> PracticeProfile:
 
     practice = PracticeProfile(**BRIGHTCARE_PRACTICE)
     db.add(practice)
+    await db.flush()
+
+    # Auto-create default agent config for the seeded practice
+    existing_config = await db.execute(
+        select(AgentConfig).where(AgentConfig.practice_id == practice.id)
+    )
+    if not existing_config.scalars().first():
+        agent_config = AgentConfig(practice_id=practice.id, **DEFAULT_AGENT_CONFIG)
+        db.add(agent_config)
+
     await db.commit()
     await db.refresh(practice)
     return practice
